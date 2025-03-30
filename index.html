@@ -6,12 +6,8 @@
     <title>TechJeeper Designs</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Ko-Fi Button -->
-    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -23,32 +19,39 @@
         <ul>
             <li><a href="#home">Home</a></li>
             <li><a href="https://ko-fi.com/techjeeper/shop" target="_blank">Shop</a></li>
-            <li><a href="https://twitch.tv/techjeeper" target="_blank">Twitch</a></li>
-            <li><a href="https://bsky.app/profile/techjeeper.com" target="_blank">BlueSky</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Socials <i class="fas fa-chevron-down"></i></a>
+                <ul class="dropdown-menu">
+                    <li><a href="https://twitch.tv/techjeeper" target="_blank"><i class="fab fa-twitch"></i> Twitch</a></li>
+                    <li><a href="https://bsky.app/profile/techjeeper.com" target="_blank"><i class="fas fa-cloud"></i> BlueSky</a></li>
+                    <li><a href="https://x.com/techjeeper" target="_blank"><i class="fab fa-x-twitter"></i> X</a></li>
+                    <li><a href="https://www.linkedin.com/in/codydean/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a></li>
+                </ul>
+            </li>
             <li><a href="https://links.techjeeper.com" target="_blank">Portfolio</a></li>
         </ul>
     </nav>
 
-    <div class="ticker-container">
-        <div class="ticker-wrapper">
-            <div class="ticker-label">
-                <i class="fas fa-cloud"></i> Latest Updates
-            </div>
-            <div class="ticker">
-                <div class="ticker-content">
-                    <!-- Posts will be loaded dynamically -->
-                </div>
-            </div>
-        </div>
-    </div>
-
     <main class="main-container">
-        <!-- Content Sections -->
         <section id="home" class="section active">
             <div class="home-content">
                 <img src="assets/img/header.png" alt="TechJeeper Designs" class="header-logo">
-                <p class="tagline">Maker Projects and Tech Adventures</p>
+                <p class="tagline">
+                    <span>M</span><span>a</span><span>k</span><span>e</span><span>r</span>
+                    <span>P</span><span>r</span><span>o</span><span>j</span><span>e</span><span>c</span><span>t</span><span>s</span>
+                    <span>a</span><span>n</span><span>d</span>
+                    <span>T</span><span>e</span><span>c</span><span>h</span>
+                    <span>A</span><span>d</span><span>v</span><span>e</span><span>n</span><span>t</span><span>u</span><span>r</span><span>e</span><span>s</span>
+                </p>
                 <div class="social-links">
+                    <a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="social-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Shop</span>
+                    </a>
+                    <a href="https://links.techjeeper.com" target="_blank" class="social-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Portfolio</span>
+                    </a>
                     <a href="https://twitch.tv/techjeeper" target="_blank" class="social-link">
                         <i class="fab fa-twitch"></i>
                         <span>Twitch</span>
@@ -57,13 +60,13 @@
                         <i class="fas fa-cloud"></i>
                         <span>BlueSky</span>
                     </a>
-                    <a href="https://shop.techjeeper.com" target="_blank" class="social-link">
-                        <i class="fas fa-shopping-cart"></i>
-                        <span>Shop</span>
+                    <a href="https://x.com/techjeeper" target="_blank" class="social-link">
+                        <i class="fab fa-x-twitter x-icon"></i>
+                        <span>X</span>
                     </a>
-                    <a href="https://links.techjeeper.com" target="_blank" class="social-link">
-                        <i class="fas fa-folder-open"></i>
-                        <span>Portfolio</span>
+                    <a href="https://www.linkedin.com/in/codydean/" target="_blank" class="social-link">
+                        <i class="fab fa-linkedin"></i>
+                        <span>LinkedIn</span>
                     </a>
                 </div>
             </div>
@@ -84,44 +87,9 @@
                         </div>
                     </div>
                     <div class="shop-description">
+                        <h3>Visit My Shop</h3>
                         <p>Check out my latest designs and products on Ko-Fi!</p>
-                        <a href="https://shop.techjeeper.com" target="_blank" class="shop-button">Visit Shop</a>
-                    </div>
-                    <div class="kofi-widget">
-                        <iframe src="https://ko-fi.com/techjeeper/shop" 
-                                style="border: none; width: 100%; height: 600px;" 
-                                frameborder="0" 
-                                scrolling="no">
-                        </iframe>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="twitch" class="section">
-            <h2>Live on Twitch</h2>
-            <div class="twitch-container">
-                <div class="twitch-content">
-                    <div class="twitch-player">
-                        <iframe src="https://player.twitch.tv/?channel=techjeeper&parent=localhost" 
-                                frameborder="0" 
-                                allowfullscreen="true" 
-                                scrolling="no" 
-                                height="378" 
-                                width="620">
-                        </iframe>
-                    </div>
-                    <div class="twitch-chat">
-                        <iframe src="https://www.twitch.tv/embed/techjeeper/chat?parent=localhost" 
-                                frameborder="0" 
-                                height="378" 
-                                width="350">
-                        </iframe>
-                    </div>
-                    <div class="twitch-info">
-                        <h3>Follow for Live Content</h3>
-                        <p>Join me for live coding, design sessions, and more!</p>
-                        <a href="https://twitch.tv/techjeeper" target="_blank" class="twitch-button">Follow on Twitch</a>
+                        <a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-button">Visit Shop</a>
                     </div>
                 </div>
             </div>
@@ -166,6 +134,21 @@
             </div>
         </section>
     </main>
+
+    <!-- Ticker Section -->
+    <div class="ticker-container">
+        <div class="ticker-wrapper">
+            <div class="ticker-label">
+                <i class="fas fa-cloud"></i>
+                <span>Latest Posts</span>
+            </div>
+            <div class="ticker-content">
+                <div class="ticker-track">
+                    <!-- Posts will be loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="assets/js/background.js"></script>

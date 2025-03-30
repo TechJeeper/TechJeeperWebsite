@@ -13,21 +13,21 @@ class ShopHighlights {
         // Example featured items for testing
         this.items = [
             {
-                image: 'https://via.placeholder.com/400x300',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkN1c3RvbSBKZWVwIERlc2lnbiBULVNoaXJ0PC90ZXh0Pjwvc3ZnPg==',
                 title: 'Custom Jeep Design T-Shirt',
                 description: 'Limited edition off-road inspired design',
                 price: '$24.99',
                 link: 'https://ko-fi.com/techjeeper/shop'
             },
             {
-                image: 'https://via.placeholder.com/400x300',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFkdmVudHVyZSBTdGlja2VyIFBhY2s8L3RleHQ+PC9zdmc+',
                 title: 'Adventure Sticker Pack',
                 description: 'Set of 5 waterproof vinyl stickers',
                 price: '$12.99',
                 link: 'https://ko-fi.com/techjeeper/shop'
             },
             {
-                image: 'https://via.placeholder.com/400x300',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRpZ2l0YWwgQXJ0IFByaW50PC90ZXh0Pjwvc3ZnPg==',
                 title: 'Digital Art Print',
                 description: 'High-quality 12x18 print',
                 price: '$19.99',
@@ -39,10 +39,15 @@ class ShopHighlights {
         this.addEventListeners();
     }
 
+    handleImageError(img) {
+        img.onerror = null; // Prevent infinite loop
+        img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIENvbWluZyBTb29uPC90ZXh0Pjwvc3ZnPg==';
+    }
+
     renderSlider() {
         const itemsHTML = this.items.map((item, index) => `
             <div class="featured-item ${index === 0 ? 'active' : ''}">
-                <img src="${item.image}" alt="${item.title}">
+                <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIENvbWluZyBTb29uPC90ZXh0Pjwvc3ZnPg==';">
                 <div class="featured-item-info">
                     <h4>${item.title}</h4>
                     <p>${item.description}</p>
@@ -90,40 +95,40 @@ class BlueSkyFeed {
             {
                 author: {
                     name: 'TechJeeper',
-                    avatar: 'https://via.placeholder.com/50x50'
+                    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlRKPC90ZXh0Pjwvc3ZnPg=='
                 },
                 text: 'Just launched my new custom Jeep design collection! Check it out in the shop 🚙✨',
                 createdAt: new Date(),
-                images: ['https://via.placeholder.com/600x400'],
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkplZXAgRGVzaWduIENvbGxlY3Rpb248L3RleHQ+PC9zdmc+'],
                 likes: 42,
                 reposts: 12
             },
             {
                 author: {
                     name: 'TechJeeper',
-                    avatar: 'https://via.placeholder.com/50x50'
+                    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlRKPC90ZXh0Pjwvc3ZnPg=='
                 },
                 text: 'Working on some exciting new digital art pieces. Stay tuned! 🎨',
-                createdAt: new Date(Date.now() - 86400000), // 1 day ago
-                images: ['https://via.placeholder.com/600x400'],
+                createdAt: new Date(Date.now() - 86400000),
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRpZ2l0YWwgQXJ0IFByZXZpZXc8L3RleHQ+PC9zdmc+'],
                 likes: 38,
                 reposts: 8
             },
             {
                 author: {
                     name: 'TechJeeper',
-                    avatar: 'https://via.placeholder.com/50x50'
+                    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlRKPC90ZXh0Pjwvc3ZnPg=='
                 },
                 text: 'New sticker designs dropping next week! Which is your favorite? 🌟',
-                createdAt: new Date(Date.now() - 172800000), // 2 days ago
-                images: ['https://via.placeholder.com/600x400'],
+                createdAt: new Date(Date.now() - 172800000),
+                images: ['data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlN0aWNrZXIgRGVzaWduczwvdGV4dD48L3ZnPg=='],
                 likes: 56,
                 reposts: 15
             }
         ];
         
         this.renderHighlights();
-        this.renderFeed(this.highlights); // Use the same data for the feed for now
+        this.renderFeed(this.highlights);
         this.addEventListeners();
     }
 
@@ -131,7 +136,8 @@ class BlueSkyFeed {
         const highlightsHTML = this.highlights.map((post, index) => `
             <div class="featured-post ${index === 0 ? 'active' : ''}">
                 <div class="featured-post-header">
-                    <img src="${post.author.avatar}" alt="${post.author.name}" class="featured-post-avatar">
+                    <img src="${post.author.avatar}" alt="${post.author.name}" class="featured-post-avatar" 
+                        onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlRKPC90ZXh0Pjwvc3ZnPg==';">
                     <div class="featured-post-info">
                         <h4>${post.author.name}</h4>
                         <span class="featured-post-date">${this.formatDate(post.createdAt)}</span>
@@ -226,7 +232,8 @@ class BlueSkyFeed {
         return `
             <div class="post-images">
                 ${images.map(image => `
-                    <img src="${image.url}" alt="${image.alt}" class="post-image">
+                    <img src="${image}" alt="Post image" class="post-image" 
+                        onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIENvbWluZyBTb29uPC90ZXh0Pjwvc3ZnPg==';">
                 `).join('')}
             </div>
         `;
@@ -263,214 +270,213 @@ class BlueSkyFeed {
 // Portfolio Integration
 class Portfolio {
     constructor() {
-        this.portfolioGrid = document.querySelector('.portfolio-grid');
-        this.init();
-    }
-
-    async init() {
-        try {
-            // Note: Replace with your actual portfolio API endpoint
-            const response = await fetch('https://printventory.com/api/portfolio');
-            const data = await response.json();
-            this.renderPortfolio(data);
-        } catch (error) {
-            console.error('Error loading portfolio:', error);
-            this.showError();
-        }
-    }
-
-    renderPortfolio(items) {
-        if (!items || items.length === 0) {
-            this.showError();
-            return;
-        }
-
-        const portfolioHTML = items.map(item => `
-            <div class="portfolio-item">
-                <img src="${item.image}" alt="${item.title}" class="portfolio-image">
-                <div class="portfolio-overlay">
-                    <h3>${item.title}</h3>
-                    <p>${item.description}</p>
-                    <div class="portfolio-tags">
-                        ${item.tags.map(tag => `
-                            <span class="tag">${tag}</span>
-                        `).join('')}
-                    </div>
-                    <a href="${item.link}" target="_blank" class="view-project">View Project</a>
-                </div>
-            </div>
-        `).join('');
-
-        this.portfolioGrid.innerHTML = portfolioHTML;
-        this.addEventListeners();
-    }
-
-    addEventListeners() {
-        this.portfolioGrid.querySelectorAll('.portfolio-item').forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                item.classList.add('hover');
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.classList.remove('hover');
-            });
-        });
-    }
-
-    showError() {
-        this.portfolioGrid.innerHTML = `
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <p>Unable to load portfolio items. Please try again later.</p>
-            </div>
-        `;
-    }
-}
-
-// Contact Form Handler
-class ContactForm {
-    constructor() {
-        this.form = document.getElementById('contact-form');
+        this.container = document.querySelector('.portfolio-grid');
         this.init();
     }
 
     init() {
-        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+        if (!this.container) return;
+        this.renderItems();
     }
 
-    async handleSubmit(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this.form);
-        const data = {
-            name: formData.get('name'),
-            email: formData.get('email'),
-            message: formData.get('message')
-        };
-
-        try {
-            // Note: Replace with your actual form submission endpoint
-            const response = await fetch('/api/contact', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                this.showSuccess();
-                this.form.reset();
-            } else {
-                throw new Error('Failed to send message');
+    renderItems() {
+        // Static portfolio items instead of API call
+        const items = [
+            {
+                title: 'Project 1',
+                description: 'Description of project 1',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb2plY3QgMTwvdGV4dD48L3N2Zz4=',
+                link: '#'
+            },
+            {
+                title: 'Project 2',
+                description: 'Description of project 2',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb2plY3QgMjwvdGV4dD48L3N2Zz4=',
+                link: '#'
+            },
+            {
+                title: 'Project 3',
+                description: 'Description of project 3',
+                image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb2plY3QgMzwvdGV4dD48L3N2Zz4=',
+                link: '#'
             }
-        } catch (error) {
-            console.error('Error sending message:', error);
-            this.showError();
-        }
-    }
+        ];
 
-    showSuccess() {
-        const successMessage = document.createElement('div');
-        successMessage.className = 'success-message';
-        successMessage.innerHTML = `
-            <i class="fas fa-check-circle"></i>
-            <p>Message sent successfully!</p>
-        `;
-        this.form.appendChild(successMessage);
-        setTimeout(() => successMessage.remove(), 3000);
-    }
-
-    showError() {
-        const errorMessage = document.createElement('div');
-        errorMessage.className = 'error-message';
-        errorMessage.innerHTML = `
-            <i class="fas fa-exclamation-circle"></i>
-            <p>Failed to send message. Please try again.</p>
-        `;
-        this.form.appendChild(errorMessage);
-        setTimeout(() => errorMessage.remove(), 3000);
+        this.container.innerHTML = items.map(item => `
+            <div class="portfolio-item">
+                <img src="${item.image}" alt="${item.title}">
+                <div class="portfolio-item-info">
+                    <h3>${item.title}</h3>
+                    <p>${item.description}</p>
+                    <a href="${item.link}" class="portfolio-item-link">View Project</a>
+                </div>
+            </div>
+        `).join('');
     }
 }
 
-// BlueSky Ticker
 class BlueSkyTicker {
     constructor() {
-        this.tickerContent = document.querySelector('.ticker-content');
+        this.tickerTrack = document.querySelector('.ticker-track');
         this.posts = [];
         this.init();
     }
 
     async init() {
-        // Example posts for testing (replace with actual API call)
-        this.posts = [
-            {
-                text: "Just finished a new 3D printed design! Can't wait to share it with everyone 🚀",
-                timestamp: new Date(Date.now() - 1800000) // 30 minutes ago
-            },
-            {
-                text: "Working on some exciting IoT projects with Arduino and Raspberry Pi 🛠️",
-                timestamp: new Date(Date.now() - 3600000) // 1 hour ago
-            },
-            {
-                text: "New video tutorial on custom PCB design coming soon! 🔧",
-                timestamp: new Date(Date.now() - 7200000) // 2 hours ago
+        await this.fetchPosts();
+        this.renderPosts();
+    }
+
+    async fetchPosts() {
+        try {
+            // First, get the DID (Decentralized Identifier) for the handle
+            const handleResponse = await fetch('https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=techjeeper.com');
+            const handleData = await handleResponse.json();
+            
+            if (!handleData.did) {
+                throw new Error('Could not resolve handle');
             }
-        ];
 
-        this.renderTicker();
-        this.startTickerAnimation();
+            // Then fetch the feed using the DID
+            const response = await fetch(`https://bsky.social/xrpc/app.bsky.feed.getAuthorFeed?actor=${handleData.did}&limit=10`);
+            const data = await response.json();
+            
+            if (data.feed && data.feed.length > 0) {
+                this.posts = data.feed.map(post => ({
+                    text: post.post.record.text,
+                    date: new Date(post.post.record.createdAt),
+                    uri: post.post.uri
+                }));
+            } else {
+                throw new Error('No posts found');
+            }
+
+            this.renderPosts();
+        } catch (error) {
+            console.error('Error fetching BlueSky posts:', error);
+            // Add some example posts if the API call fails
+            this.posts = [
+                { 
+                    text: "Check out my latest project! 🚀", 
+                    date: new Date(), 
+                    uri: "https://bsky.app/profile/techjeeper.com" 
+                },
+                { 
+                    text: "New design just dropped! 🎨", 
+                    date: new Date(Date.now() - 3600000), 
+                    uri: "https://bsky.app/profile/techjeeper.com" 
+                },
+                { 
+                    text: "Working on something exciting! ⚡", 
+                    date: new Date(Date.now() - 7200000), 
+                    uri: "https://bsky.app/profile/techjeeper.com" 
+                },
+                { 
+                    text: "Just finished a new digital art piece! 🎯", 
+                    date: new Date(Date.now() - 10800000), 
+                    uri: "https://bsky.app/profile/techjeeper.com" 
+                },
+                { 
+                    text: "New sticker designs coming soon! 🌟", 
+                    date: new Date(Date.now() - 14400000), 
+                    uri: "https://bsky.app/profile/techjeeper.com" 
+                }
+            ];
+            this.renderPosts();
+        }
     }
 
-    formatTimeAgo(date) {
-        const seconds = Math.floor((new Date() - date) / 1000);
-        
-        let interval = Math.floor(seconds / 31536000);
-        if (interval > 1) return interval + 'y ago';
-        
-        interval = Math.floor(seconds / 2592000);
-        if (interval > 1) return interval + 'mo ago';
-        
-        interval = Math.floor(seconds / 86400);
-        if (interval > 1) return interval + 'd ago';
-        
-        interval = Math.floor(seconds / 3600);
-        if (interval > 1) return interval + 'h ago';
-        
-        interval = Math.floor(seconds / 60);
-        if (interval > 1) return interval + 'm ago';
-        
-        return Math.floor(seconds) + 's ago';
-    }
+    renderPosts() {
+        if (!this.tickerTrack) return;
 
-    renderTicker() {
-        this.tickerContent.innerHTML = this.posts.map(post => `
-            <div class="ticker-item">
-                <span class="ticker-timestamp">${this.formatTimeAgo(post.timestamp)}</span>
-                <span class="ticker-text">${post.text}</span>
-            </div>
-        `).join('');
+        // Clear existing content
+        this.tickerTrack.innerHTML = '';
 
-        // Clone items for seamless loop
-        const items = this.tickerContent.innerHTML;
-        this.tickerContent.innerHTML += items;
-    }
-
-    startTickerAnimation() {
-        // Reset animation when it completes
-        this.tickerContent.addEventListener('animationend', () => {
-            this.tickerContent.style.animation = 'none';
-            void this.tickerContent.offsetWidth; // Trigger reflow
-            this.tickerContent.style.animation = null;
+        // Create ticker items
+        this.posts.forEach(post => {
+            const tickerItem = document.createElement('div');
+            tickerItem.className = 'ticker-item';
+            
+            const content = document.createElement('div');
+            content.className = 'post-content';
+            content.textContent = post.text;
+            
+            const date = document.createElement('div');
+            date.className = 'post-date';
+            date.textContent = this.formatDate(post.date);
+            
+            tickerItem.appendChild(content);
+            tickerItem.appendChild(date);
+            
+            // Add click handler to open post
+            tickerItem.addEventListener('click', () => {
+                window.open(post.uri, '_blank');
+            });
+            
+            this.tickerTrack.appendChild(tickerItem);
         });
+
+        // Clone items for seamless scrolling
+        const items = this.tickerTrack.children;
+        for (let i = 0; i < items.length; i++) {
+            const clone = items[i].cloneNode(true);
+            this.tickerTrack.appendChild(clone);
+        }
+
+        // Add a second set of clones for smoother infinite scroll
+        for (let i = 0; i < items.length; i++) {
+            const clone = items[i].cloneNode(true);
+            this.tickerTrack.appendChild(clone);
+        }
+    }
+
+    formatDate(date) {
+        const now = new Date();
+        const diff = now - date;
+        
+        if (diff < 60000) return 'just now';
+        if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+        if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+        return date.toLocaleDateString();
     }
 }
 
 // Initialize integrations when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ShopHighlights();
-    new BlueSkyFeed();
-    new Portfolio();
-    new ContactForm();
+    // Initialize shop highlights
+    const shopHighlights = new ShopHighlights();
+    
+    // Initialize BlueSky feed
+    const blueskyFeed = new BlueSkyFeed();
+    
+    // Initialize portfolio
+    const portfolio = new Portfolio();
+    
+    // Initialize BlueSky ticker
     new BlueSkyTicker();
+    
+    // Re-initialize content when sections become active
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Re-initialize content when section becomes visible
+                    switch(section.id) {
+                        case 'shop':
+                            shopHighlights.init();
+                            break;
+                        case 'bluesky':
+                            blueskyFeed.init();
+                            break;
+                        case 'portfolio':
+                            portfolio.init();
+                            break;
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        observer.observe(section);
+    });
 }); 

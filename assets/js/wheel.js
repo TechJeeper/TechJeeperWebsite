@@ -1,0 +1,1 @@
+// Wheel navigation removed to prevent GSAP errors 
