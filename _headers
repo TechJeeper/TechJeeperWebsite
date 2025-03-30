@@ -1,0 +1,6 @@
+/*
+  Content-Security-Policy: default-src 'self' https://ko-fi.com https://storage.ko-fi.com https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' https://storage.ko-fi.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; frame-src https://ko-fi.com; img-src 'self' data: https:; connect-src 'self' https://printventory.com https://bsky.app; font-src 'self' https://cdnjs.cloudflare.com;
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=() 
