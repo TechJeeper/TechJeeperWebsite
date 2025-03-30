@@ -192,9 +192,15 @@ a, button, input, textarea, select {
 /* Social Links */
 .social-links {
     display: flex;
+    flex-direction: column;
     gap: 1.5rem;
     margin-top: 2rem;
-    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.social-links-row {
+    display: flex;
+    gap: 1.5rem;
     justify-content: center;
 }
 
@@ -206,6 +212,8 @@ a, button, input, textarea, select {
     color: var(--text-color);
     transition: transform 0.3s ease, color 0.3s ease;
     padding: 0.5rem;
+    flex: 1;
+    max-width: 120px;
 }
 
 .social-link i {
@@ -823,14 +831,17 @@ h3 {
     }
 
     .social-links {
-        flex-wrap: wrap;
         max-width: 400px;
         margin-left: auto;
         margin-right: auto;
     }
 
+    .social-links-row {
+        flex-wrap: wrap;
+    }
+
     .social-link {
-        width: calc(50% - 1rem);
+        width: calc(33.33% - 1rem);
         justify-content: center;
     }
 
