@@ -18,7 +18,7 @@
 body {
     background-color: var(--primary-bg);
     color: var(--text-primary);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
     overflow-x: hidden;
     position: relative; /* Added for stacking context */
@@ -214,6 +214,9 @@ a, button, input, textarea, select {
     padding: 0.5rem;
     flex: 1;
     max-width: 120px;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 .social-link i {
@@ -517,7 +520,7 @@ a, button, input, textarea, select {
 
 /* Typography */
 h1 {
-    font-size: 4rem;
+    font-size: 3rem;
     margin-bottom: 1rem;
     background: linear-gradient(45deg, var(--accent-color), var(--accent-hover));
     -webkit-background-clip: text;
@@ -525,7 +528,7 @@ h1 {
 }
 
 h2 {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     margin-bottom: 2rem;
     color: var(--text-primary);
 }
@@ -537,7 +540,7 @@ h3 {
 }
 
 .tagline {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--text-secondary);
     opacity: 1;
     visibility: visible;
@@ -846,7 +849,7 @@ h3 {
     }
 
     .tagline {
-        font-size: 1.2rem;
+        font-size: 2rem;
     }
 
     .tagline span {
@@ -1087,5 +1090,24 @@ h3 {
 
     .dropdown-menu a {
         padding: 0.5rem 1rem;
+    }
+}
+
+/* Add delay for each social link */
+.social-link:nth-child(1) { animation-delay: 0.2s; }
+.social-link:nth-child(2) { animation-delay: 0.3s; }
+.social-link:nth-child(3) { animation-delay: 0.4s; }
+.social-link:nth-child(4) { animation-delay: 0.5s; }
+.social-link:nth-child(5) { animation-delay: 0.6s; }
+.social-link:nth-child(6) { animation-delay: 0.7s; }
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
     }
 } 
