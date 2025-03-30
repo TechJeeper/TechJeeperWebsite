@@ -1,0 +1,151 @@
+/* Wheel Animation */
+@keyframes rotateWheel {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.wheel-container.rotating {
+    animation: rotateWheel 1s ease-in-out;
+}
+
+/* Section Transitions */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+.section.entering {
+    animation: slideIn 0.5s ease forwards;
+}
+
+.section.exiting {
+    animation: slideOut 0.5s ease forwards;
+}
+
+/* Hover Effects */
+.wheel-item {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wheel-item:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+}
+
+/* Cursor Effects */
+.cursor {
+    transition: transform 0.2s ease;
+}
+
+.cursor.hovering {
+    transform: scale(2);
+    background: var(--accent-hover);
+}
+
+.cursor-follower {
+    transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.cursor-follower.hovering {
+    transform: scale(1.5);
+    width: 60px;
+    height: 60px;
+    border-color: var(--accent-hover);
+}
+
+/* Loading Animation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Parallax Effect */
+.parallax {
+    transition: transform 0.2s ease-out;
+}
+
+/* Text Reveal Animation */
+@keyframes revealText {
+    from {
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+    }
+    to {
+        clip-path: polygon(0 0, 100% 100%, 100% 100%, 0 100%);
+    }
+}
+
+.text-reveal {
+    animation: revealText 1s ease forwards;
+}
+
+/* Background Gradient Animation */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.gradient-bg {
+    background: linear-gradient(-45deg, var(--primary-bg), var(--secondary-bg), var(--accent-color));
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+}
+
+/* Scroll Progress Indicator */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent-color), var(--accent-hover));
+    transform-origin: 0%;
+    transform: scaleX(0);
+    transition: transform 0.1s ease;
+}
+
+/* Responsive Animations */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+} 

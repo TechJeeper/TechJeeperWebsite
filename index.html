@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechJeeper Designs</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Ko-Fi Button -->
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="https://ko-fi.com/techjeeper/shop" target="_blank">Shop</a></li>
+            <li><a href="https://twitch.tv/techjeeper" target="_blank">Twitch</a></li>
+            <li><a href="https://bsky.app/profile/techjeeper.com" target="_blank">BlueSky</a></li>
+            <li><a href="https://links.techjeeper.com" target="_blank">Portfolio</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-container">
+        <!-- Content Sections -->
+        <section id="home" class="section active">
+            <div class="home-content">
+                <img src="assets/img/header.png" alt="TechJeeper Designs" class="header-logo">
+                <p class="tagline">Maker Projects and Tech Adventures</p>
+                <div class="social-links">
+                    <a href="https://twitch.tv/techjeeper" target="_blank" class="social-link">
+                        <i class="fab fa-twitch"></i>
+                        <span>Twitch</span>
+                    </a>
+                    <a href="https://bsky.app/profile/techjeeper.com" target="_blank" class="social-link">
+                        <i class="fas fa-cloud"></i>
+                        <span>BlueSky</span>
+                    </a>
+                    <a href="https://shop.techjeeper.com" target="_blank" class="social-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Shop</span>
+                    </a>
+                    <a href="https://links.techjeeper.com" target="_blank" class="social-link">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Portfolio</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="shop" class="section">
+            <h2>Ko-Fi Shop</h2>
+            <div class="shop-container">
+                <div class="shop-content">
+                    <div class="shop-highlights">
+                        <h3>Featured Items</h3>
+                        <div class="highlights-slider">
+                            <!-- Highlights will be loaded dynamically -->
+                        </div>
+                        <div class="slider-controls">
+                            <button class="prev-slide"><i class="fas fa-chevron-left"></i></button>
+                            <button class="next-slide"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="shop-description">
+                        <p>Check out my latest designs and products on Ko-Fi!</p>
+                        <a href="https://shop.techjeeper.com" target="_blank" class="shop-button">Visit Shop</a>
+                    </div>
+                    <div class="kofi-widget">
+                        <iframe src="https://ko-fi.com/techjeeper/shop" 
+                                style="border: none; width: 100%; height: 600px;" 
+                                frameborder="0" 
+                                scrolling="no">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="twitch" class="section">
+            <h2>Live on Twitch</h2>
+            <div class="twitch-container">
+                <div class="twitch-content">
+                    <div class="twitch-player">
+                        <iframe src="https://player.twitch.tv/?channel=techjeeper&parent=localhost" 
+                                frameborder="0" 
+                                allowfullscreen="true" 
+                                scrolling="no" 
+                                height="378" 
+                                width="620">
+                        </iframe>
+                    </div>
+                    <div class="twitch-chat">
+                        <iframe src="https://www.twitch.tv/embed/techjeeper/chat?parent=localhost" 
+                                frameborder="0" 
+                                height="378" 
+                                width="350">
+                        </iframe>
+                    </div>
+                    <div class="twitch-info">
+                        <h3>Follow for Live Content</h3>
+                        <p>Join me for live coding, design sessions, and more!</p>
+                        <a href="https://twitch.tv/techjeeper" target="_blank" class="twitch-button">Follow on Twitch</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bluesky" class="section">
+            <h2>BlueSky Feed</h2>
+            <div class="bluesky-container">
+                <div class="bluesky-content">
+                    <div class="bluesky-highlights">
+                        <h3>Featured Posts</h3>
+                        <div class="highlights-carousel">
+                            <!-- Highlights will be loaded dynamically -->
+                        </div>
+                        <div class="carousel-indicators"></div>
+                    </div>
+                    <div class="bluesky-feed">
+                        <!-- BlueSky feed will be loaded dynamically -->
+                    </div>
+                    <div class="bluesky-info">
+                        <h3>Connect on BlueSky</h3>
+                        <p>Follow my journey and updates on BlueSky!</p>
+                        <a href="https://bsky.app/profile/techjeeper.com" target="_blank" class="bluesky-button">Follow on BlueSky</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="section">
+            <h2>Portfolio</h2>
+            <div class="portfolio-container">
+                <div class="portfolio-content">
+                    <div class="portfolio-grid">
+                        <!-- Portfolio items will be loaded dynamically -->
+                    </div>
+                    <div class="portfolio-info">
+                        <h3>View More Projects</h3>
+                        <p>Check out my complete portfolio of designs and projects!</p>
+                        <a href="https://links.techjeeper.com" target="_blank" class="portfolio-button">View Full Portfolio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Scripts -->
+    <script src="assets/js/background.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/animations.js"></script>
+    <script src="assets/js/integrations.js"></script>
+</body>
+</html> 
