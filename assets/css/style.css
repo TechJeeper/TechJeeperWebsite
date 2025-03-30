@@ -592,6 +592,7 @@ h3 {
 .tagline span:nth-child(28) { animation-delay: 1.45s; }
 .tagline span:nth-child(29) { animation-delay: 1.5s; }
 .tagline span:nth-child(30) { animation-delay: 1.55s; }
+.tagline span:nth-child(31) { animation-delay: 1.6s; }
 
 /* Container Styles */
 .shop-container,
@@ -823,6 +824,27 @@ h3 {
 
     .social-links {
         flex-wrap: wrap;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .social-link {
+        width: calc(50% - 1rem);
+        justify-content: center;
+    }
+
+    .tagline {
+        font-size: 1.2rem;
+    }
+
+    .tagline span {
+        display: inline-block;
+    }
+
+    /* Adjust animation delays for second line */
+    .tagline span:nth-child(n+14) {
+        animation-delay: calc(0.7s + (n - 14) * 0.05s);
     }
 
     .cta-buttons {
