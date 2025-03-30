@@ -100,7 +100,7 @@ button:hover ~ .cursor-follower {
 
 /* Main Container */
 .main-container {
-    padding-top: 5rem; /* Add space for fixed navigation */
+    padding-top: 100px; /* Height of nav + ticker */
     min-height: 100vh;
     position: relative;
 }
@@ -728,4 +728,88 @@ h3 {
 .section.active h2,
 .section.active .tagline {
     animation: fadeIn 0.8s ease forwards;
+}
+
+/* Ticker */
+.ticker-container {
+    width: 100%;
+    background: var(--secondary-bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    position: fixed;
+    top: 60px; /* Height of nav bar */
+    z-index: 98;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.ticker-wrapper {
+    display: flex;
+    align-items: center;
+    height: 40px;
+}
+
+.ticker-label {
+    padding: 0 20px;
+    background: var(--accent-color);
+    color: var(--text-primary);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.ticker-label i {
+    margin-right: 8px;
+}
+
+.ticker {
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+    position: relative;
+}
+
+.ticker-content {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+}
+
+.ticker-content:hover {
+    animation-play-state: paused;
+}
+
+.ticker-item {
+    padding: 0 30px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ticker-item:not(:last-child)::after {
+    content: '•';
+    color: var(--accent-color);
+    margin-left: 30px;
+}
+
+.ticker-timestamp {
+    color: var(--accent-color);
+    font-size: 0.8rem;
+}
+
+@keyframes ticker {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
 } 

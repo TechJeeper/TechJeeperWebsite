@@ -393,10 +393,84 @@ class ContactForm {
     }
 }
 
+// BlueSky Ticker
+class BlueSkyTicker {
+    constructor() {
+        this.tickerContent = document.querySelector('.ticker-content');
+        this.posts = [];
+        this.init();
+    }
+
+    async init() {
+        // Example posts for testing (replace with actual API call)
+        this.posts = [
+            {
+                text: "Just finished a new 3D printed design! Can't wait to share it with everyone 🚀",
+                timestamp: new Date(Date.now() - 1800000) // 30 minutes ago
+            },
+            {
+                text: "Working on some exciting IoT projects with Arduino and Raspberry Pi 🛠️",
+                timestamp: new Date(Date.now() - 3600000) // 1 hour ago
+            },
+            {
+                text: "New video tutorial on custom PCB design coming soon! 🔧",
+                timestamp: new Date(Date.now() - 7200000) // 2 hours ago
+            }
+        ];
+
+        this.renderTicker();
+        this.startTickerAnimation();
+    }
+
+    formatTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        let interval = Math.floor(seconds / 31536000);
+        if (interval > 1) return interval + 'y ago';
+        
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) return interval + 'mo ago';
+        
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) return interval + 'd ago';
+        
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) return interval + 'h ago';
+        
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) return interval + 'm ago';
+        
+        return Math.floor(seconds) + 's ago';
+    }
+
+    renderTicker() {
+        this.tickerContent.innerHTML = this.posts.map(post => `
+            <div class="ticker-item">
+                <span class="ticker-timestamp">${this.formatTimeAgo(post.timestamp)}</span>
+                <span class="ticker-text">${post.text}</span>
+            </div>
+        `).join('');
+
+        // Clone items for seamless loop
+        const items = this.tickerContent.innerHTML;
+        this.tickerContent.innerHTML += items;
+    }
+
+    startTickerAnimation() {
+        // Reset animation when it completes
+        this.tickerContent.addEventListener('animationend', () => {
+            this.tickerContent.style.animation = 'none';
+            void this.tickerContent.offsetWidth; // Trigger reflow
+            this.tickerContent.style.animation = null;
+        });
+    }
+}
+
 // Initialize integrations when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     new ShopHighlights();
     new BlueSkyFeed();
     new Portfolio();
     new ContactForm();
+    new BlueSkyTicker();
 }); 
