@@ -127,7 +127,6 @@ window.addEventListener('resize', () => {
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize sections
     const sections = document.querySelectorAll('.section');
-    const navLinks = document.querySelectorAll('.main-nav a');
     
     // Show home section by default and ensure it stays visible
     const homeSection = document.querySelector('#home');
@@ -143,47 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         homeContent.style.opacity = '1';
         homeContent.style.visibility = 'visible';
     }
-    
-    // Handle navigation clicks
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href').substring(1);
-            
-            // Handle external links
-            if (link.getAttribute('target') === '_blank') {
-                window.open(link.href, '_blank');
-                return;
-            }
-            
-            // Update active section with proper visibility
-            sections.forEach(section => {
-                section.classList.remove('active');
-                section.style.opacity = '0';
-                section.style.visibility = 'hidden';
-                section.style.pointerEvents = 'none';
-                section.style.zIndex = '0';
-                
-                if (section.id === targetId) {
-                    section.classList.add('active');
-                    section.style.opacity = '1';
-                    section.style.visibility = 'visible';
-                    section.style.pointerEvents = 'auto';
-                    section.style.zIndex = '1';
-                    
-                    // Ensure section content is visible
-                    const sectionContent = section.querySelector('.section-content');
-                    if (sectionContent) {
-                        sectionContent.style.opacity = '1';
-                        sectionContent.style.visibility = 'visible';
-                    }
-                }
-            });
-            
-            // Update URL without scrolling
-            history.pushState(null, '', `#${targetId}`);
-        });
-    });
     
     // Handle initial hash in URL
     const initialHash = window.location.hash.substring(1);
