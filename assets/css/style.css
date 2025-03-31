@@ -3,7 +3,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    cursor: none !important;
 }
 
 :root {
@@ -35,91 +34,6 @@ body::before {
     background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
     pointer-events: none;
     z-index: 999;
-}
-
-/* Custom Cursor */
-.cursor {
-    width: 20px;
-    height: 23px; /* Slightly taller to account for hexagon shape */
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background-color: var(--accent-color);
-    position: fixed;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    z-index: 9999;
-    transition: transform 0.2s ease;
-    transform: translate(-50%, -50%) rotate(30deg);
-}
-
-.cursor-follower {
-    width: 40px;
-    height: 46px; /* Slightly taller to account for hexagon shape */
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background-color: rgba(0, 191, 255, 0.3); /* Electric blue with transparency */
-    position: fixed;
-    pointer-events: none;
-    mix-blend-mode: difference;
-    z-index: 9998;
-    transition: transform 0.3s ease, width 0.3s ease, height 0.3s ease;
-    transform: translate(-50%, -50%) rotate(30deg);
-}
-
-/* Cursor hover effects */
-a:hover ~ .cursor,
-button:hover ~ .cursor {
-    transform: translate(-50%, -50%) rotate(30deg) scale(1.5);
-}
-
-a:hover ~ .cursor-follower,
-button:hover ~ .cursor-follower {
-    transform: translate(-50%, -50%) rotate(30deg) scale(1.8);
-    background-color: rgba(0, 191, 255, 0.5);
-}
-
-/* Cursor spin animation */
-.cursor.spinning {
-    animation: spin 0.5s linear infinite;
-}
-
-.cursor-follower.spinning {
-    animation: spin 0.5s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: translate(-50%, -50%) rotate(30deg);
-    }
-    to {
-        transform: translate(-50%, -50%) rotate(390deg);
-    }
-}
-
-/* Cursor trail effect */
-.cursor-trail {
-    position: fixed;
-    width: 20px;
-    height: 23px;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    background-color: var(--accent-color);
-    pointer-events: none;
-    mix-blend-mode: difference;
-    z-index: 9997;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.cursor-trail.fade-out {
-    opacity: 0;
-}
-
-/* Remove default cursor */
-* {
-    cursor: none !important;
-}
-
-/* Ensure cursor is visible on interactive elements */
-a, button, input, textarea, select {
-    cursor: none !important;
 }
 
 /* Main Container */

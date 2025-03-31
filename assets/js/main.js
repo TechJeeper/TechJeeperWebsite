@@ -1,29 +1,3 @@
-// Custom Cursor
-const cursor = document.querySelector('.cursor');
-const cursorFollower = document.querySelector('.cursor-follower');
-
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    
-    cursorFollower.style.left = e.clientX + 'px';
-    cursorFollower.style.top = e.clientY + 'px';
-});
-
-// Add hover effect to interactive elements
-const interactiveElements = document.querySelectorAll('a, button, .portfolio-item');
-interactiveElements.forEach(element => {
-    element.addEventListener('mouseenter', () => {
-        cursor.classList.add('hovering');
-        cursorFollower.classList.add('hovering');
-    });
-    
-    element.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hovering');
-        cursorFollower.classList.remove('hovering');
-    });
-});
-
 // Section Management
 const sections = document.querySelectorAll('.section');
 let currentSection = 'home';
