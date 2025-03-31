@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechJeeper Designs - Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional shop page specific styles */
+        .shop-page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .category-filters {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--secondary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active {
+            background: var(--accent-color);
+            color: var(--primary-bg);
+        }
+
+        .category-btn:hover {
+            background: var(--accent-hover);
+            color: var(--primary-bg);
+            transform: translateY(-2px);
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .shop-item {
+            background: var(--secondary-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .shop-item.sold-out {
+            opacity: 0.8;
+        }
+
+        .shop-item.sold-out .shop-item-image {
+            filter: grayscale(0.7);
+        }
+
+        .sold-out-badge, .limited-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .sold-out-badge {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .limited-badge {
+            background-color: #ffd166;
+            color: #333;
+        }
+
+        .shop-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .shop-item-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .shop-item-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .shop-item-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .shop-item-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .shop-item-price {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .shop-item-button {
+            padding: 0.8rem;
+            background: var(--accent-color);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .shop-item-button:hover {
+            background: var(--accent-hover);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 10px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .back-to-home {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--accent-color);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 30px;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-to-home:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <header class="site-header">
+        <a href="index.html" class="back-to-home">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </header>
+
+    <main class="shop-page-container">
+        <h1>TechJeeper Shop</h1>
+        <p class="tagline">Check out my handmade and 3D printed creations</p>
+        
+        <div class="category-filters">
+            <button class="category-btn active" data-category="all">All Items</button>
+            <button class="category-btn" data-category="3dprinted">3D Printed</button>
+            <button class="category-btn" data-category="fiberarts">Fiber Arts</button>
+        </div>
+        
+        <div class="shop-grid" id="shop-items">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p>Loading shop items...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+        });
+
+        // Add hover effect to interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .shop-item');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursor.classList.add('hovering');
+                cursorFollower.classList.add('hovering');
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hovering');
+                cursorFollower.classList.remove('hovering');
+            });
+        });
+
+        // Ko-Fi Shop API Integration
+        class ShopManager {
+            constructor() {
+                this.shopContainer = document.getElementById('shop-items');
+                this.categoryBtns = document.querySelectorAll('.category-btn');
+                this.currentCategory = 'all';
+                this.items = [];
+                this.init();
+            }
+
+            async init() {
+                this.addEventListeners();
+                await this.fetchItems();
+            }
+
+            addEventListeners() {
+                this.categoryBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.dataset.category;
+                        this.filterItems(category);
+                        
+                        // Update active button
+                        this.categoryBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                    });
+                });
+            }
+
+            async fetchItems(category = '') {
+                try {
+                    this.showLoading();
+                    
+                    // Define Ko-Fi category ID mappings
+                    const koFiCategoryMapping = {
+                        '3dprinted': '634658',
+                        'fiberarts': '619605'
+                    };
+                    
+                    // Determine the API URL based on category
+                    let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
+                    
+                    // If category is specified, use the appropriate Ko-Fi category ID
+                    if (category && category !== 'all' && koFiCategoryMapping[category]) {
+                        targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0&category=${koFiCategoryMapping[category]}`;
+                    }
+                    
+                    // Try multiple CORS proxies in case some fail
+                    const corsProxies = [
+                        'https://corsproxy.io/?',
+                        'https://api.allorigins.win/get?url='
+                    ];
+                    
+                    let data = null;
+                    let lastError = null;
+                    
+                    // Try each proxy until one works
+                    for (const proxy of corsProxies) {
+                        try {
+                            const apiUrl = proxy + encodeURIComponent(targetUrl);
+                            console.log(`Trying CORS proxy: ${proxy}`);
+                            
+                            const response = await fetch(apiUrl, {
+                                headers: {
+                                    'accept': 'application/json, text/javascript, */*; q=0.01',
+                                    'x-requested-with': 'XMLHttpRequest'
+                                }
+                            });
+                            
+                            if (!response.ok) {
+                                throw new Error(`Failed with status: ${response.status}`);
+                            }
+                            
+                            const result = await response.json();
+                            
+                            // Handle different response formats from different proxies
+                            if (proxy === 'https://api.allorigins.win/get?url=') {
+                                // AllOrigins wraps the response in a "contents" property
+                                if (result && result.contents) {
+                                    data = JSON.parse(result.contents);
+                                } else {
+                                    throw new Error('Invalid response format from AllOrigins');
+                                }
+                            } else {
+                                // Direct JSON response from other proxies
+                                data = result;
+                            }
+                            
+                            // If we got data, break the loop
+                            if (data) {
+                                console.log("Successfully fetched data with proxy:", proxy);
+                                break;
+                            }
+                        } catch (proxyError) {
+                            console.warn(`CORS proxy ${proxy} failed:`, proxyError);
+                            lastError = proxyError;
+                            // Continue to the next proxy
+                        }
+                    }
+                    
+                    // If no proxy worked
+                    if (!data) {
+                        throw new Error(lastError ? lastError.message : 'All proxies failed');
+                    }
+                    
+                    this.items = data || [];
+                    this.renderItems();
+                } catch (error) {
+                    console.error('Error fetching shop items:', error);
+                    this.showError(`
+                        <h3>Unable to fetch items from Ko-Fi</h3>
+                        <p>The API may be unavailable or have CORS restrictions.</p>
+                        <p>Please try again later or visit the Ko-Fi shop directly:</p>
+                        <p><a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 15px auto;">Visit Ko-Fi Shop</a></p>
+                        <p><small>Error details: ${error.message}</small></p>
+                    `);
+                }
+            }
+
+            filterItems(category) {
+                this.currentCategory = category;
+                this.fetchItems(category);
+            }
+
+            renderItems() {
+                if (!this.items || this.items.length === 0) {
+                    this.shopContainer.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle fa-2x"></i>
+                            <p>No items found in this category.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const itemsHTML = this.items.map(item => {
+                    // Handle image URL formatting
+                    let imageUrl = 'assets/img/placeholder.png';
+                    if (item.ThumbnailUrls && item.ThumbnailUrls.length > 0) {
+                        // Check if the URL is already a full URL
+                        if (item.ThumbnailUrls[0].startsWith('http')) {
+                            imageUrl = item.ThumbnailUrls[0];
+                        } else {
+                            // If not, assume it's just the filename and construct the full URL
+                            imageUrl = `https://storage.ko-fi.com/cdn/useruploads/display/${item.ThumbnailUrls[0]}`;
+                        }
+                    }
+                    
+                    // Handle sold-out status
+                    const soldOutBadge = item.IsSoldOut ? 
+                        `<div class="sold-out-badge">Sold Out</div>` : 
+                        (item.ItemsAvailable && item.ItemsAvailable < 3 ? 
+                            `<div class="limited-badge">Only ${item.ItemsAvailable} left!</div>` : '');
+                    
+                    return `
+                        <div class="shop-item ${item.IsSoldOut ? 'sold-out' : ''}">
+                            ${soldOutBadge}
+                            <img src="${imageUrl}" 
+                                alt="${item.Name}" class="shop-item-image" 
+                                onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBBdmFpbGFibGU8L3RleHQ+PC9zdmc+';">
+                            <div class="shop-item-info">
+                                <h3 class="shop-item-title">${item.Name}</h3>
+                                <p class="shop-item-description">${item.Description || 'No description available'}</p>
+                                <p class="shop-item-price">${this.formatPrice(item.Price)}</p>
+                                <a href="https://ko-fi.com/techjeeper/shop/item/${item.Alias}" target="_blank" class="shop-item-button">
+                                    ${item.IsSoldOut ? 'View Details' : 'Purchase'}
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                this.shopContainer.innerHTML = itemsHTML;
+                
+                // Reattach event listeners to new elements
+                document.querySelectorAll('.shop-item').forEach(element => {
+                    element.addEventListener('mouseenter', () => {
+                        cursor.classList.add('hovering');
+                        cursorFollower.classList.add('hovering');
+                    });
+                    
+                    element.addEventListener('mouseleave', () => {
+                        cursor.classList.remove('hovering');
+                        cursorFollower.classList.remove('hovering');
+                    });
+                });
+            }
+
+            formatPrice(price) {
+                if (!price) return 'Price not available';
+                
+                // Handle different price formats
+                if (typeof price === 'number') {
+                    return `$${price.toFixed(2)}`;
+                } else if (typeof price === 'string') {
+                    // If price is already formatted, return as is
+                    if (price.includes('$')) return price;
+                    
+                    // Try to convert to number and format
+                    const numPrice = parseFloat(price);
+                    if (!isNaN(numPrice)) {
+                        return `$${numPrice.toFixed(2)}`;
+                    }
+                    
+                    return price;
+                }
+                
+                return 'Price not available';
+            }
+
+            showLoading() {
+                this.shopContainer.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin fa-3x"></i>
+                        <p>Loading shop items...</p>
+                    </div>
+                `;
+            }
+
+            showError(message) {
+                this.shopContainer.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                        <div>${message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the shop when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            const shopManager = new ShopManager();
+        });
+    </script>
+</body>
+</html> 
