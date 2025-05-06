@@ -26,6 +26,9 @@
   gtag('config', 'G-CYQEF5Z0F3');
 </script>
 <body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    
     <header class="site-header">
         <a href="index.html" class="back-to-home">
             <i class="fas fa-arrow-left"></i> Back to Home
@@ -67,30 +70,44 @@
     </main>
 
     <script>
-        // Custom Cursor
-        const cursor = document.querySelector('.cursor');
-        const cursorFollower = document.querySelector('.cursor-follower');
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Custom Cursor
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
 
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            
-            cursorFollower.style.left = e.clientX + 'px';
-            cursorFollower.style.top = e.clientY + 'px';
-        });
+            if (cursor && cursorFollower) {
+                document.addEventListener('mousemove', (e) => {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                    
+                    cursorFollower.style.left = e.clientX + 'px';
+                    cursorFollower.style.top = e.clientY + 'px';
+                });
 
-        // Add hover effect to interactive elements
-        const interactiveElements = document.querySelectorAll('a, button, .shop-item');
-        interactiveElements.forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                cursor.classList.add('hovering');
-                cursorFollower.classList.add('hovering');
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                cursor.classList.remove('hovering');
-                cursorFollower.classList.remove('hovering');
-            });
+                // Add hover effect to interactive elements
+                const interactiveElements = document.querySelectorAll('a, button, .shop-item');
+                interactiveElements.forEach(element => {
+                    if (element) {  // Check if element exists
+                        element.addEventListener('mouseenter', () => {
+                            if (cursor && cursorFollower) {  // Check if cursor elements exist
+                                cursor.classList.add('hovering');
+                                cursorFollower.classList.add('hovering');
+                            }
+                        });
+                        
+                        element.addEventListener('mouseleave', () => {
+                            if (cursor && cursorFollower) {  // Check if cursor elements exist
+                                cursor.classList.remove('hovering');
+                                cursorFollower.classList.remove('hovering');
+                            }
+                        });
+                    }
+                });
+            }
+
+            // Initialize the shop
+            const shopManager = new ShopManager();
         });
 
         // Ko-Fi Shop API Integration
