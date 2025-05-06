@@ -180,91 +180,106 @@
             }
 
             async fetchItems(category = '') {
-                try {
-                    this.showLoading();
-                    
-                    // Determine the API URL based on category
-                    let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
-                    
-                    // If category is specified, use the category name directly in the URL
-                    if (category && category !== 'all') {
-                        targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0&category=${category}`;
-                    }
-                    
-                    // Try multiple CORS proxies in case some fail
-                    const corsProxies = [
-                        'https://corsproxy.io/?',
-                        'https://api.allorigins.win/get?url='
-                    ];
-                    
-                    let data = null;
-                    let lastError = null;
-                    
-                    // Try each proxy until one works
-                    for (const proxy of corsProxies) {
-                        try {
-                            const apiUrl = proxy + encodeURIComponent(targetUrl);
-                            console.log(`Trying CORS proxy: ${proxy}`);
-                            console.log(`Target URL: ${targetUrl}`);
-                            
-                            const response = await fetch(apiUrl, {
-                                headers: {
-                                    'accept': 'application/json, text/javascript, */*; q=0.01',
-                                    'x-requested-with': 'XMLHttpRequest'
+                const maxRetries = 3;
+                let currentRetry = 0;
+                
+                while (currentRetry < maxRetries) {
+                    try {
+                        this.showLoading();
+                        
+                        // Determine the API URL based on category
+                        let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
+                        
+                        // If category is specified, use the category name directly in the URL
+                        if (category && category !== 'all') {
+                            targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0&category=${category}`;
+                        }
+                        
+                        // Try multiple CORS proxies in case some fail
+                        const corsProxies = [
+                            'https://corsproxy.io/?',
+                            'https://api.allorigins.win/get?url='
+                        ];
+                        
+                        let data = null;
+                        let lastError = null;
+                        
+                        // Try each proxy until one works
+                        for (const proxy of corsProxies) {
+                            try {
+                                const apiUrl = proxy + encodeURIComponent(targetUrl);
+                                console.log(`Trying CORS proxy: ${proxy}`);
+                                console.log(`Target URL: ${targetUrl}`);
+                                
+                                const response = await fetch(apiUrl, {
+                                    headers: {
+                                        'accept': 'application/json, text/javascript, */*; q=0.01',
+                                        'x-requested-with': 'XMLHttpRequest'
+                                    }
+                                });
+                                
+                                if (!response.ok) {
+                                    throw new Error(`Failed with status: ${response.status}`);
                                 }
-                            });
-                            
-                            if (!response.ok) {
-                                throw new Error(`Failed with status: ${response.status}`);
-                            }
-                            
-                            const result = await response.json();
-                            
-                            // Handle different response formats from different proxies
-                            if (proxy === 'https://api.allorigins.win/get?url=') {
-                                // AllOrigins wraps the response in a "contents" property
-                                if (result && result.contents) {
-                                    data = JSON.parse(result.contents);
+                                
+                                const result = await response.json();
+                                
+                                // Handle different response formats from different proxies
+                                if (proxy === 'https://api.allorigins.win/get?url=') {
+                                    // AllOrigins wraps the response in a "contents" property
+                                    if (result && result.contents) {
+                                        data = JSON.parse(result.contents);
+                                    } else {
+                                        throw new Error('Invalid response format from AllOrigins');
+                                    }
                                 } else {
-                                    throw new Error('Invalid response format from AllOrigins');
+                                    // Direct JSON response from other proxies
+                                    data = result;
                                 }
-                            } else {
-                                // Direct JSON response from other proxies
-                                data = result;
+                                
+                                // If we got data, break the loop
+                                if (data) {
+                                    console.log("Successfully fetched data with proxy:", proxy);
+                                    break;
+                                }
+                            } catch (proxyError) {
+                                console.warn(`CORS proxy ${proxy} failed:`, proxyError);
+                                lastError = proxyError;
+                                // Continue to the next proxy
                             }
-                            
-                            // If we got data, break the loop
-                            if (data) {
-                                console.log("Successfully fetched data with proxy:", proxy);
-                                break;
-                            }
-                        } catch (proxyError) {
-                            console.warn(`CORS proxy ${proxy} failed:`, proxyError);
-                            lastError = proxyError;
-                            // Continue to the next proxy
+                        }
+                        
+                        // If no proxy worked
+                        if (!data) {
+                            throw new Error(lastError ? lastError.message : 'All proxies failed');
+                        }
+                        
+                        this.items = data || [];
+                        
+                        // Shuffle items to randomize the display order
+                        this.shuffleItems();
+                        
+                        this.renderItems();
+                        return; // Success - exit the retry loop
+                        
+                    } catch (error) {
+                        currentRetry++;
+                        console.warn(`Attempt ${currentRetry} of ${maxRetries} failed:`, error);
+                        
+                        if (currentRetry === maxRetries) {
+                            console.error('All retry attempts failed:', error);
+                            this.showError(`
+                                <h3>Unable to fetch items from Ko-Fi</h3>
+                                <p>The API may be unavailable or have CORS restrictions.</p>
+                                <p>Please try again later or visit the Ko-Fi shop directly:</p>
+                                <p><a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 15px auto;">Visit Ko-Fi Shop</a></p>
+                                <p><small>Error details: ${error.message}</small></p>
+                            `);
+                        } else {
+                            // Wait a bit before retrying (exponential backoff)
+                            await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, currentRetry)));
                         }
                     }
-                    
-                    // If no proxy worked
-                    if (!data) {
-                        throw new Error(lastError ? lastError.message : 'All proxies failed');
-                    }
-                    
-                    this.items = data || [];
-                    
-                    // Shuffle items to randomize the display order
-                    this.shuffleItems();
-                    
-                    this.renderItems();
-                } catch (error) {
-                    console.error('Error fetching shop items:', error);
-                    this.showError(`
-                        <h3>Unable to fetch items from Ko-Fi</h3>
-                        <p>The API may be unavailable or have CORS restrictions.</p>
-                        <p>Please try again later or visit the Ko-Fi shop directly:</p>
-                        <p><a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 15px auto;">Visit Ko-Fi Shop</a></p>
-                        <p><small>Error details: ${error.message}</small></p>
-                    `);
                 }
             }
 
