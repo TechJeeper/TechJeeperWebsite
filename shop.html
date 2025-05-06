@@ -105,7 +105,21 @@
 
             async init() {
                 this.addEventListeners();
-                await this.fetchItems();
+                // Get category from URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryParam = urlParams.get('category');
+                
+                if (categoryParam) {
+                    // Find and click the matching category button
+                    const matchingBtn = Array.from(this.categoryBtns).find(btn => 
+                        btn.dataset.category === categoryParam
+                    );
+                    if (matchingBtn) {
+                        matchingBtn.click();
+                    }
+                } else {
+                    await this.fetchItems();
+                }
             }
 
             addEventListeners() {
