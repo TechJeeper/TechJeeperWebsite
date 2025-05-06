@@ -128,6 +128,15 @@
                     btn.addEventListener('click', () => {
                         const category = btn.dataset.category;
                         
+                        // Update URL with the selected category
+                        const url = new URL(window.location.href);
+                        if (category === 'all') {
+                            url.searchParams.delete('category');
+                        } else {
+                            url.searchParams.set('category', category);
+                        }
+                        window.history.pushState({}, '', url);
+                        
                         // Add a subtle animation to the shop grid
                         this.shopContainer.classList.add('fade-out');
                         
