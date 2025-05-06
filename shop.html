@@ -409,13 +409,9 @@
                 // Reattach event listeners to new elements
                 document.querySelectorAll('.shop-item').forEach(element => {
                     element.addEventListener('mouseenter', () => {
-
-                        cursorFollower.classList.add('hovering');
                     });
                     
                     element.addEventListener('mouseleave', () => {
-
-                        cursorFollower.classList.remove('hovering');
                     });
                 });
             }
