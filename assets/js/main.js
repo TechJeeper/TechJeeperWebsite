@@ -104,17 +104,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Show home section by default and ensure it stays visible
     const homeSection = document.querySelector('#home');
-    homeSection.classList.add('active');
-    homeSection.style.opacity = '1';
-    homeSection.style.visibility = 'visible';
-    homeSection.style.pointerEvents = 'auto';
-    homeSection.style.zIndex = '1';
-    
-    // Ensure home section content is visible
-    const homeContent = homeSection.querySelector('.home-content');
-    if (homeContent) {
-        homeContent.style.opacity = '1';
-        homeContent.style.visibility = 'visible';
+    if (homeSection) {
+        homeSection.classList.add('active');
+        homeSection.style.opacity = '1';
+        homeSection.style.visibility = 'visible';
+        homeSection.style.pointerEvents = 'auto';
+        homeSection.style.zIndex = '1';
+
+        // Ensure home section content is visible
+        const homeContent = homeSection.querySelector('.home-content');
+        if (homeContent) {
+            homeContent.style.opacity = '1';
+            homeContent.style.visibility = 'visible';
+        }
     }
     
     // Handle initial hash in URL
