@@ -1041,7 +1041,7 @@ footer {
     padding: 1rem;
     text-align: center;
     z-index: 1000;
-    background: transparent;
+    background: var(--primary-bg);
 }
 
 footer p {
