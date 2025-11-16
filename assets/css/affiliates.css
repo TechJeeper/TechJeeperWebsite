@@ -16,49 +16,54 @@
     border-radius: 1rem;
 }
 
-.affiliates-list {
+.affiliates-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    list-style-type: none;
     padding: 0;
     max-width: 1200px;
     margin: 2rem auto;
 }
 
 @media (min-width: 1200px) {
-    .affiliates-list {
+    .affiliates-grid {
         grid-template-columns: repeat(4, 1fr);
     }
 }
 
-.affiliates-list li {
+.affiliate-card {
     background: var(--secondary-bg);
     border-radius: 0.5rem;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;
-    text-align: center;
+    text-align: left;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
 }
 
-.affiliates-list li:hover {
+.affiliate-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.affiliates-list a {
+.affiliate-card h4 {
     color: var(--accent-color);
-    text-decoration: none;
     font-size: 1.2rem;
+    margin-top: 0;
     margin-bottom: 1rem;
     transition: color 0.3s ease;
 }
 
-.affiliates-list a:hover {
+.affiliate-card:hover h4 {
     color: var(--accent-hover);
+}
+
+.affiliate-card p {
+    margin-bottom: 1rem;
+    flex-grow: 1;
 }
 
 .discount-code {
