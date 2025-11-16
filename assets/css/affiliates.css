@@ -1,0 +1,43 @@
+.affiliates-list {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+    width: 100%;
+    max-width: 800px;
+}
+
+.affiliates-list li {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.affiliates-list li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.affiliates-list a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.affiliates-list a:hover {
+    text-decoration: underline;
+}
+
+.discount-code {
+    color: #ffd700;
+    font-size: 0.9rem;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+}
