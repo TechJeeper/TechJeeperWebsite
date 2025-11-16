@@ -1,0 +1,75 @@
+
+/* assets/css/affiliates.css */
+
+#affiliates.section {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+}
+
+.affiliates-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: var(--secondary-bg);
+    border-radius: 1rem;
+}
+
+.affiliates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    padding: 0;
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+@media (min-width: 1200px) {
+    .affiliates-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.affiliate-card {
+    background: var(--secondary-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.affiliate-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.affiliate-card h4 {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.affiliate-card:hover h4 {
+    color: var(--accent-hover);
+}
+
+.affiliate-card p {
+    margin-bottom: 1rem;
+    flex-grow: 1;
+}
+
+.discount-code {
+    background: var(--accent-color);
+    color: var(--primary-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
