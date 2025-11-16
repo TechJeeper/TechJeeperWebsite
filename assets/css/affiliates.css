@@ -73,3 +73,8 @@
     border-radius: 0.25rem;
     font-weight: 500;
 }
+
+/* Override fixed footer for scrolling page */
+footer {
+    position: relative;
+}
