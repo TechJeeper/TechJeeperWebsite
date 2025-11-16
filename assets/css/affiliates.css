@@ -1,0 +1,64 @@
+
+/* assets/css/affiliates.css */
+
+#affiliates.section {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+}
+
+.affiliates-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    background: var(--secondary-bg);
+    border-radius: 1rem;
+}
+
+.affiliates-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    list-style-type: none;
+    padding: 0;
+    max-width: 1200px;
+    margin: 2rem auto;
+}
+
+.affiliates-list li {
+    background: var(--secondary-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.affiliates-list li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.affiliates-list a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.affiliates-list a:hover {
+    color: var(--accent-hover);
+}
+
+.discount-code {
+    background: var(--accent-color);
+    color: var(--primary-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
