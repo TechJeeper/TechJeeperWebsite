@@ -60,6 +60,7 @@
         
         <div class="category-filters">
             <button class="category-btn active" data-category="all">All Items</button>
+            <button class="category-btn" data-category="etsy">Etsy</button>
             <button class="category-btn" data-category="3dprinted">3D Printed</button>
             <button class="category-btn" data-category="fiberarts">Fiber Arts</button>
             <button class="category-btn" data-category="jewelry">Jewlery</button>
@@ -115,13 +116,45 @@
             const shopManager = new ShopManager();
         });
 
-        // Ko-Fi Shop API Integration
+        // Shop Manager for Ko-Fi and Etsy Integration
         class ShopManager {
             constructor() {
                 this.shopContainer = document.getElementById('shop-items');
                 this.categoryBtns = document.querySelectorAll('.category-btn');
                 this.currentCategory = 'all';
                 this.items = [];
+                this.etsyItems = [
+                    {
+                        Name: 'Custom 3D Printed Jeep Accessories',
+                        Description: 'Personalized 3D printed accessories for your Jeep. Custom colors and designs available.',
+                        Price: 'Check Etsy',
+                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
+                        Alias: 'etsy-jeep-accessories',
+                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
+                        Source: 'Etsy',
+                        IsSoldOut: false
+                    },
+                    {
+                        Name: 'Handmade Fiber Arts Collection',
+                        Description: 'Unique handmade fiber art pieces, crafted with care and high-quality materials.',
+                        Price: 'Check Etsy',
+                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
+                        Alias: 'etsy-fiber-arts',
+                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
+                        Source: 'Etsy',
+                        IsSoldOut: false
+                    },
+                    {
+                        Name: 'TechJeeper Sticker Pack',
+                        Description: 'High-quality vinyl stickers featuring exclusive TechJeeper designs. Perfect for laptops and gear.',
+                        Price: 'Check Etsy',
+                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
+                        Alias: 'etsy-sticker-pack',
+                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
+                        Source: 'Etsy',
+                        IsSoldOut: false
+                    }
+                ];
                 this.init();
             }
 
@@ -202,6 +235,13 @@
             }
 
             async fetchItems(category = '') {
+                // If only Etsy category is selected, we don't need to fetch Ko-Fi items
+                if (category === 'etsy') {
+                    this.items = [...this.etsyItems];
+                    this.renderItems();
+                    return;
+                }
+
                 const maxRetries = 3;
                 let currentRetry = 0;
                 
@@ -213,7 +253,8 @@
                         let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
                         
                         // If category is specified, use the category name directly in the URL
-                        if (category && category !== 'all') {
+                        // Note: Ko-Fi categories might not match our button data-category exactly if we add new ones
+                        if (category && category !== 'all' && category !== 'etsy') {
                             targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0&category=${category}`;
                         }
                         
@@ -276,7 +317,13 @@
                             throw new Error(lastError ? lastError.message : 'All proxies failed');
                         }
                         
-                        this.items = data || [];
+                        // Combine Ko-Fi items with Etsy items if viewing 'all'
+                        let combinedItems = data || [];
+                        if (category === 'all' || category === '') {
+                             combinedItems = [...combinedItems, ...this.etsyItems];
+                        }
+
+                        this.items = combinedItems;
                         
                         // Shuffle items to randomize the display order
                         this.shuffleItems();
@@ -290,13 +337,20 @@
                         
                         if (currentRetry === maxRetries) {
                             console.error('All retry attempts failed:', error);
-                            this.showError(`
-                                <h3>Unable to fetch items from Ko-Fi</h3>
-                                <p>The API may be unavailable or have CORS restrictions.</p>
-                                <p>Please try again later or visit the Ko-Fi shop directly:</p>
-                                <p><a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 15px auto;">Visit Ko-Fi Shop</a></p>
-                                <p><small>Error details: ${error.message}</small></p>
-                            `);
+
+                            // Even if Ko-Fi fails, show Etsy items if 'all' or 'etsy'
+                            if (category === 'all' || category === 'etsy' || category === '') {
+                                this.items = [...this.etsyItems];
+                                this.renderItems();
+                            } else {
+                                this.showError(`
+                                    <h3>Unable to fetch items from Ko-Fi</h3>
+                                    <p>The API may be unavailable or have CORS restrictions.</p>
+                                    <p>Please try again later or visit the Ko-Fi shop directly:</p>
+                                    <p><a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 15px auto;">Visit Ko-Fi Shop</a></p>
+                                    <p><small>Error details: ${error.message}</small></p>
+                                `);
+                            }
                         } else {
                             // Wait a bit before retrying (exponential backoff)
                             await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, currentRetry)));
@@ -345,7 +399,7 @@
                     let imageUrl = 'assets/img/placeholder.png';
                     if (item.ThumbnailUrls && item.ThumbnailUrls.length > 0) {
                         // Check if the URL is already a full URL
-                        if (item.ThumbnailUrls[0].startsWith('http')) {
+                        if (item.ThumbnailUrls[0].startsWith('http') || item.ThumbnailUrls[0].startsWith('assets/')) {
                             imageUrl = item.ThumbnailUrls[0];
                         } else {
                             // If not, assume it's just the filename and construct the full URL
@@ -372,25 +426,36 @@
                     const featuredClass = isFeaturedItem ? 'featured' : '';
                     const featuredBadge = isFeaturedItem ? 
                         `<div class="featured-badge">Featured Item</div>` : '';
+
+                    // Determine Link URL
+                    let itemLink = item.Link;
+                    if (!itemLink) {
+                         // Default to Ko-Fi link structure if not explicitly provided
+                         itemLink = `https://ko-fi.com/s/${item.Alias}`;
+                    }
+
+                    // Source Badge (Optional, but good for UX)
+                    const sourceBadge = item.Source ? `<div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:4px 8px; border-radius:4px; font-size:12px;">${item.Source}</div>` : '';
                     
                     return `
                         <div class="shop-item ${item.IsSoldOut ? 'sold-out' : ''} ${featuredClass}">
                             ${soldOutBadge}
                             ${featuredBadge}
-                            <a href="https://ko-fi.com/s/${item.Alias}" target="_blank" class="shop-item-image-link">
+                            ${sourceBadge}
+                            <a href="${itemLink}" target="_blank" class="shop-item-image-link">
                                 <img src="${imageUrl}" 
                                     alt="${item.Name}" class="shop-item-image" 
                                     onerror="this.onerror=null; this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIE5vdCBBdmFpbGFibGU8L3RleHQ+PC9zdmc+';">
                             </a>
                             <div class="shop-item-info">
                                 <h3 class="shop-item-title">
-                                    <a href="https://ko-fi.com/s/${item.Alias}" target="_blank" class="shop-item-title-link">
+                                    <a href="${itemLink}" target="_blank" class="shop-item-title-link">
                                         ${item.Name}
                                     </a>
                                 </h3>
                                 <p class="shop-item-description">${item.Description || 'No description available'}</p>
                                 <p class="shop-item-price">${this.formatPrice(item.Price)}</p>
-                                <a href="https://ko-fi.com/s/${item.Alias}" target="_blank" class="shop-item-button">
+                                <a href="${itemLink}" target="_blank" class="shop-item-button">
                                     ${item.IsSoldOut ? 'View Details' : 'Purchase'}
                                 </a>
                             </div>
