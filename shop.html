@@ -123,38 +123,7 @@
                 this.categoryBtns = document.querySelectorAll('.category-btn');
                 this.currentCategory = 'all';
                 this.items = [];
-                this.etsyItems = [
-                    {
-                        Name: 'Custom 3D Printed Jeep Accessories',
-                        Description: 'Personalized 3D printed accessories for your Jeep. Custom colors and designs available.',
-                        Price: 'Check Etsy',
-                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
-                        Alias: 'etsy-jeep-accessories',
-                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
-                        Source: 'Etsy',
-                        IsSoldOut: false
-                    },
-                    {
-                        Name: 'Handmade Fiber Arts Collection',
-                        Description: 'Unique handmade fiber art pieces, crafted with care and high-quality materials.',
-                        Price: 'Check Etsy',
-                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
-                        Alias: 'etsy-fiber-arts',
-                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
-                        Source: 'Etsy',
-                        IsSoldOut: false
-                    },
-                    {
-                        Name: 'TechJeeper Sticker Pack',
-                        Description: 'High-quality vinyl stickers featuring exclusive TechJeeper designs. Perfect for laptops and gear.',
-                        Price: 'Check Etsy',
-                        ThumbnailUrls: ['assets/img/placeholder.png'], // Placeholder
-                        Alias: 'etsy-sticker-pack',
-                        Link: 'https://www.etsy.com/shop/TechJeeperDesigns',
-                        Source: 'Etsy',
-                        IsSoldOut: false
-                    }
-                ];
+                this.etsyItems = [];
                 this.init();
             }
 
@@ -234,7 +203,64 @@
                 }
             }
 
+            async fetchEtsyItems() {
+                try {
+                    const rssUrl = 'https://www.etsy.com/shop/TechJeeperDesigns/rss';
+                    // Using AllOrigins as it reliably handles XML responses
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
+
+                    const response = await fetch(proxyUrl);
+                    if (!response.ok) throw new Error('Failed to fetch Etsy feed');
+
+                    const data = await response.json();
+                    if (!data.contents) throw new Error('No content in Etsy feed response');
+
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                    const items = xmlDoc.querySelectorAll('item');
+
+                    this.etsyItems = Array.from(items).map(item => {
+                        const title = item.querySelector('title')?.textContent || 'Untitled';
+                        const link = item.querySelector('link')?.textContent || '#';
+                        const description = item.querySelector('description')?.textContent || '';
+
+                        // Extract price
+                        const priceMatch = description.match(/<p class="price">(.+?)<\/p>/);
+                        const price = priceMatch ? priceMatch[1] : 'Check Etsy';
+
+                        // Extract image
+                        const imgMatch = description.match(/<img src="(.+?)"/);
+                        const thumbnail = imgMatch ? imgMatch[1] : 'assets/img/placeholder.png';
+
+                        // Clean up description (remove HTML tags)
+                        const cleanDesc = description.replace(/<[^>]*>/g, '').replace(/Check out this item on Etsy/g, '').trim().substring(0, 100) + '...';
+
+                        return {
+                            Name: title,
+                            Description: cleanDesc,
+                            Price: price,
+                            ThumbnailUrls: [thumbnail],
+                            Alias: `etsy-${Math.random().toString(36).substr(2, 9)}`,
+                            Link: link,
+                            Source: 'Etsy',
+                            IsSoldOut: false
+                        };
+                    });
+
+                    console.log(`Fetched ${this.etsyItems.length} Etsy items`);
+                } catch (error) {
+                    console.error('Error fetching Etsy items:', error);
+                    // Fallback to empty array if fetch fails, so we don't break the whole shop
+                    this.etsyItems = [];
+                }
+            }
+
             async fetchItems(category = '') {
+                // Fetch Etsy items if we haven't already
+                if (this.etsyItems.length === 0) {
+                    await this.fetchEtsyItems();
+                }
+
                 // If only Etsy category is selected, we don't need to fetch Ko-Fi items
                 if (category === 'etsy') {
                     this.items = [...this.etsyItems];
