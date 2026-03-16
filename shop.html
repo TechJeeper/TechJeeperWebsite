@@ -80,7 +80,8 @@
     <script>
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-
+            const cursor = document.querySelector('.cursor');
+            const cursorFollower = document.querySelector('.cursor-follower');
 
             if (cursor && cursorFollower) {
                 document.addEventListener('mousemove', (e) => {
@@ -125,6 +126,7 @@
                 this.items = [];
                 this.allItems = [];
                 this.etsyItems = [];
+                this.isFetching = false;
 
                 // Map of UI category names to Ko-Fi category IDs
                 this.kofiCategoryMap = {
@@ -138,18 +140,41 @@
 
             async init() {
                 this.addEventListeners();
+
+                // Load from sessionStorage if available
+                const cachedData = sessionStorage.getItem('shopItemsCache');
+                const cacheTime = sessionStorage.getItem('shopItemsCacheTime');
+                const CACHE_EXPIRATION_MS = 60 * 60 * 1000; // 1 hour
+
+                let hasCache = false;
+                if (cachedData && cacheTime && (Date.now() - parseInt(cacheTime) < CACHE_EXPIRATION_MS)) {
+                    try {
+                        this.allItems = JSON.parse(cachedData);
+                        hasCache = true;
+                        console.log('Loaded shop items from sessionStorage cache');
+                    } catch (e) {
+                        console.error('Error parsing cache', e);
+                    }
+                }
+
                 // Get category from URL parameter
                 const urlParams = new URLSearchParams(window.location.search);
                 const categoryParam = urlParams.get('category');
                 
                 if (categoryParam) {
-                    // Find and click the matching category button
+                    this.currentCategory = categoryParam;
+                    // Find and update the matching category button state
                     const matchingBtn = Array.from(this.categoryBtns).find(btn => 
                         btn.dataset.category === categoryParam
                     );
                     if (matchingBtn) {
-                        matchingBtn.click();
+                        this.categoryBtns.forEach(b => b.classList.remove('active'));
+                        matchingBtn.classList.add('active');
                     }
+                }
+
+                if (hasCache) {
+                    this.applyCategoryFilter(this.currentCategory);
                 } else {
                     await this.fetchItems();
                 }
@@ -160,6 +185,7 @@
                 this.categoryBtns.forEach(btn => {
                     btn.addEventListener('click', () => {
                         const category = btn.dataset.category;
+                        this.currentCategory = category;
                         
                         // Update URL with the selected category
                         const url = new URL(window.location.href);
@@ -170,16 +196,21 @@
                         }
                         window.history.pushState({}, '', url);
                         
+                        // Update active button immediately
+                        this.categoryBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+
+                        // If currently fetching, do not attempt to filter yet.
+                        // We updated this.currentCategory, so when fetch finishes, it will render correctly.
+                        if (this.isFetching) {
+                            return;
+                        }
+
                         // Add a subtle animation to the shop grid
                         this.shopContainer.classList.add('fade-out');
                         
                         setTimeout(() => {
-                            this.filterItems(category);
-                            
-                            // Update active button
-                            this.categoryBtns.forEach(b => b.classList.remove('active'));
-                            btn.classList.add('active');
-                            
+                            this.applyCategoryFilter(this.currentCategory);
                             this.shopContainer.classList.remove('fade-out');
                         }, 300);
                     });
@@ -264,15 +295,16 @@
                 }
             }
 
-            async fetchItems(category = '') {
+            async fetchItems() {
                 // Only perform network fetch if we haven't loaded items yet
                 if (this.allItems.length === 0) {
+                    this.isFetching = true;
                     this.showLoading();
 
                     // Start fetching Etsy items concurrently
                     let etsyPromise = this.fetchEtsyItems();
 
-                    const maxRetries = 3;
+                    const maxRetries = 2;
                     let currentRetry = 0;
                     let koFiData = [];
 
@@ -281,10 +313,10 @@
                             // Fetch ALL Ko-Fi items (no category filter in URL)
                             let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
 
-                            // Try multiple CORS proxies in case some fail
+                            // Use reliable CORS proxies
                             const corsProxies = [
-                                'https://corsproxy.io/?',
-                                'https://api.allorigins.win/get?url='
+                                'https://api.allorigins.win/get?url=',
+                                'https://api.codetabs.com/v1/proxy?quest='
                             ];
 
                             // Fire all proxy requests concurrently and race them
@@ -304,10 +336,9 @@
                                         throw new Error(`Proxy ${proxy} failed with status: ${response.status}`);
                                     }
 
-                                    const result = await response.json();
-
                                     // Handle different response formats from different proxies
                                     if (proxy === 'https://api.allorigins.win/get?url=') {
+                                        const result = await response.json();
                                         // AllOrigins wraps the response in a "contents" property
                                         if (result && result.contents) {
                                             return JSON.parse(result.contents);
@@ -316,7 +347,7 @@
                                         }
                                     } else {
                                         // Direct JSON response from other proxies
-                                        return result;
+                                        return await response.json();
                                     }
                                 } catch (error) {
                                     // Rethrow the error so Promise.any can catch it
@@ -354,6 +385,17 @@
 
                     // Cache the combined dataset
                     this.allItems = [...(koFiData || []), ...this.etsyItems];
+
+                    if (this.allItems.length > 0) {
+                        try {
+                            sessionStorage.setItem('shopItemsCache', JSON.stringify(this.allItems));
+                            sessionStorage.setItem('shopItemsCacheTime', Date.now().toString());
+                        } catch (e) {
+                            console.warn('Could not save to sessionStorage:', e);
+                        }
+                    }
+
+                    this.isFetching = false;
                 }
 
                 // If all fetching failed completely
@@ -370,16 +412,14 @@
                     return;
                 }
 
-                this.applyCategoryFilter(category);
-            }
-
-            filterItems(category) {
-                this.currentCategory = category;
-                this.applyCategoryFilter(category);
+                this.applyCategoryFilter(this.currentCategory);
             }
 
             applyCategoryFilter(category) {
-                if (category === 'all' || category === '') {
+                // Ensure category is properly handled and fallback to all if not found
+                category = category || 'all';
+
+                if (category === 'all') {
                     this.items = [...this.allItems];
                 } else if (category === 'etsy') {
                     this.items = this.allItems.filter(item => item.Source === 'Etsy');
