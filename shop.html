@@ -295,12 +295,11 @@
                         let data = null;
                         let lastError = null;
                         
-                        // Try each proxy until one works
-                        for (const proxy of corsProxies) {
+                        // Fire all proxy requests concurrently and race them
+                        const fetchPromises = corsProxies.map(async (proxy) => {
                             try {
                                 const apiUrl = proxy + encodeURIComponent(targetUrl);
                                 console.log(`Trying CORS proxy: ${proxy}`);
-                                console.log(`Target URL: ${targetUrl}`);
                                 
                                 const response = await fetch(apiUrl, {
                                     headers: {
@@ -310,7 +309,7 @@
                                 });
                                 
                                 if (!response.ok) {
-                                    throw new Error(`Failed with status: ${response.status}`);
+                                    throw new Error(`Proxy ${proxy} failed with status: ${response.status}`);
                                 }
                                 
                                 const result = await response.json();
@@ -319,30 +318,28 @@
                                 if (proxy === 'https://api.allorigins.win/get?url=') {
                                     // AllOrigins wraps the response in a "contents" property
                                     if (result && result.contents) {
-                                        data = JSON.parse(result.contents);
+                                        return JSON.parse(result.contents);
                                     } else {
-                                        throw new Error('Invalid response format from AllOrigins');
+                                        throw new Error(`Invalid response format from AllOrigins proxy`);
                                     }
                                 } else {
                                     // Direct JSON response from other proxies
-                                    data = result;
+                                    return result;
                                 }
-                                
-                                // If we got data, break the loop
-                                if (data) {
-                                    console.log("Successfully fetched data with proxy:", proxy);
-                                    break;
-                                }
-                            } catch (proxyError) {
-                                console.warn(`CORS proxy ${proxy} failed:`, proxyError);
-                                lastError = proxyError;
-                                // Continue to the next proxy
+                            } catch (error) {
+                                // Rethrow the error so Promise.any can catch it
+                                throw error;
                             }
-                        }
-                        
-                        // If no proxy worked
-                        if (!data) {
-                            throw new Error(lastError ? lastError.message : 'All proxies failed');
+                        });
+
+                        try {
+                            // Promise.any resolves with the first successful promise
+                            data = await Promise.any(fetchPromises);
+                            console.log("Successfully fetched data from a proxy.");
+                        } catch (aggregateError) {
+                            console.warn("All CORS proxies failed:");
+                            aggregateError.errors.forEach(e => console.warn(e));
+                            throw new Error('All proxies failed');
                         }
                         
                         // Combine Ko-Fi items with Etsy items if viewing 'all'
