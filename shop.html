@@ -256,13 +256,15 @@
             }
 
             async fetchItems(category = '') {
-                // Fetch Etsy items if we haven't already
+                // Start fetching Etsy items concurrently if we haven't already
+                let etsyPromise = null;
                 if (this.etsyItems.length === 0) {
-                    await this.fetchEtsyItems();
+                    etsyPromise = this.fetchEtsyItems();
                 }
 
                 // If only Etsy category is selected, we don't need to fetch Ko-Fi items
                 if (category === 'etsy') {
+                    if (etsyPromise) await etsyPromise;
                     this.items = [...this.etsyItems];
                     this.renderItems();
                     return;
@@ -346,6 +348,7 @@
                         // Combine Ko-Fi items with Etsy items if viewing 'all'
                         let combinedItems = data || [];
                         if (category === 'all' || category === '') {
+                             if (etsyPromise) await etsyPromise;
                              combinedItems = [...combinedItems, ...this.etsyItems];
                         }
 
@@ -366,6 +369,7 @@
 
                             // Even if Ko-Fi fails, show Etsy items if 'all' or 'etsy'
                             if (category === 'all' || category === 'etsy' || category === '') {
+                                if (etsyPromise) await etsyPromise;
                                 this.items = [...this.etsyItems];
                                 this.renderItems();
                             } else {
