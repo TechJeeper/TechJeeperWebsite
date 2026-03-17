@@ -70,10 +70,6 @@
         </div>
         
         <div class="shop-grid" id="shop-items">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin fa-3x"></i>
-                <p>Loading shop items...</p>
-            </div>
         </div>
     </main>
 
@@ -396,6 +392,7 @@
                     }
 
                     this.isFetching = false;
+                    this.hideLoading();
                 }
 
                 // If all fetching failed completely
@@ -591,15 +588,27 @@
             }
 
             showLoading() {
-                this.shopContainer.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        <p>Loading shop items...</p>
-                    </div>
+                // Remove existing if any
+                this.hideLoading();
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.id = 'shop-loading-overlay';
+                overlay.innerHTML = `
+                    <i class="fas fa-spinner fa-spin fa-4x"></i>
+                    <p>Loading shop please wait...</p>
                 `;
+                document.body.appendChild(overlay);
+            }
+
+            hideLoading() {
+                const overlay = document.getElementById('shop-loading-overlay');
+                if (overlay) {
+                    overlay.remove();
+                }
             }
 
             showError(message) {
+                this.hideLoading();
                 this.shopContainer.innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-exclamation-circle fa-2x"></i>
