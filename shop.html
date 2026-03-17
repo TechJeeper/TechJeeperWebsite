@@ -70,10 +70,6 @@
         </div>
         
         <div class="shop-grid" id="shop-items">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin fa-3x"></i>
-                <p>Loading shop items...</p>
-            </div>
         </div>
     </main>
 
@@ -592,9 +588,9 @@
 
             showLoading() {
                 this.shopContainer.innerHTML = `
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin fa-3x"></i>
-                        <p>Loading shop items...</p>
+                    <div class="loading-overlay">
+                        <i class="fas fa-spinner fa-spin fa-4x"></i>
+                        <p>Loading shop please wait...</p>
                     </div>
                 `;
             }
