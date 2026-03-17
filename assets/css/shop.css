@@ -42,7 +42,7 @@
 .category-btn:hover {
     background: var(--accent-hover);
     color: var(--primary-bg);
-    transform: translateY(-3px);
+    transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 191, 255, 0.3);
 }
 
@@ -241,6 +241,31 @@
     color: var(--text-secondary);
 }
 
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--accent-color);
+}
+
+.loading-overlay p {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 191, 255, 0.4);
+}
+
 .error-message {
     text-align: center;
     padding: 2rem;
@@ -287,7 +312,7 @@
 .shuffle-btn:hover {
     background: var(--accent-hover);
     color: var(--primary-bg);
-    transform: translateY(-3px);
+    transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 191, 255, 0.3);
 }
 
