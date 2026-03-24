@@ -428,7 +428,7 @@
 
                         // Check if item has a matching category ID
                         if (item.ShopCategoryIds && Array.isArray(item.ShopCategoryIds)) {
-                            return item.ShopCategoryIds.some(id => mappedIds.includes(id));
+                            return item.ShopCategoryIds.some(id => mappedIds.includes(Number(id)) || mappedIds.includes(String(id)));
                         }
                         return false;
                     });
