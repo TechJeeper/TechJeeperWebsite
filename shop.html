@@ -108,9 +108,6 @@
                     }
                 });
             }
-
-            // Initialize the shop
-            const shopManager = new ShopManager();
         });
 
         // Shop Manager for Ko-Fi and Etsy Integration
@@ -311,8 +308,10 @@
 
                             // Use reliable CORS proxies
                             const corsProxies = [
+                                'https://api.allorigins.win/raw?url=',
                                 'https://api.allorigins.win/get?url=',
-                                'https://api.codetabs.com/v1/proxy?quest='
+                                'https://api.codetabs.com/v1/proxy?quest=',
+                                'https://corsproxy.io/?'
                             ];
 
                             // Fire all proxy requests concurrently and race them
@@ -337,13 +336,21 @@
                                         const result = await response.json();
                                         // AllOrigins wraps the response in a "contents" property
                                         if (result && result.contents) {
-                                            return JSON.parse(result.contents);
+                                            let parsed = typeof result.contents === 'string' ? JSON.parse(result.contents) : result.contents;
+                                            if (typeof parsed === 'string') parsed = JSON.parse(parsed); // Handle double-stringified JSON
+                                            if (!Array.isArray(parsed)) throw new Error('Parsed Ko-Fi data is not an array');
+                                            return parsed;
                                         } else {
                                             throw new Error(`Invalid response format from AllOrigins proxy`);
                                         }
                                     } else {
                                         // Direct JSON response from other proxies
-                                        return await response.json();
+                                        const res = await response.json();
+                                        // Some proxies might also wrap in contents depending on their API changes
+                                        let parsed = res.contents ? (typeof res.contents === 'string' ? JSON.parse(res.contents) : res.contents) : res;
+                                        if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+                                        if (!Array.isArray(parsed)) throw new Error('Parsed Ko-Fi data is not an array');
+                                        return parsed;
                                     }
                                 } catch (error) {
                                     // Rethrow the error so Promise.any can catch it
@@ -427,8 +434,9 @@
                         if (item.Source === 'Etsy') return false;
 
                         // Check if item has a matching category ID
-                        if (item.ShopCategoryIds && Array.isArray(item.ShopCategoryIds)) {
-                            return item.ShopCategoryIds.some(id => mappedIds.includes(Number(id)) || mappedIds.includes(String(id)));
+                        if (item.ShopCategoryIds) {
+                            const ids = Array.isArray(item.ShopCategoryIds) ? item.ShopCategoryIds : [item.ShopCategoryIds];
+                            return ids.some(id => mappedIds.includes(Number(id)) || mappedIds.includes(String(id)));
                         }
                         return false;
                     });
