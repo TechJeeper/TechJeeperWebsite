@@ -399,10 +399,12 @@
                     }
 
                     this.isFetching = false;
+                    this.hideLoading();
                 }
 
                 // If all fetching failed completely
                 if (this.allItems.length === 0) {
+                     this.hideLoading();
                      this.showError(`
                         <h3>Unable to fetch items from Ko-Fi and Etsy</h3>
                         <p>The APIs may be unavailable or have CORS restrictions.</p>
@@ -595,12 +597,24 @@
             }
 
             showLoading() {
-                this.shopContainer.innerHTML = `
-                    <div class="loading-overlay">
-                        <i class="fas fa-spinner fa-spin fa-4x"></i>
-                        <p>Loading shop please wait...</p>
-                    </div>
+                // Remove any existing overlay to prevent duplicates
+                this.hideLoading();
+
+                const overlay = document.createElement('div');
+                overlay.className = 'loading-overlay';
+                overlay.id = 'global-loading-overlay';
+                overlay.innerHTML = `
+                    <i class="fas fa-spinner fa-spin fa-4x"></i>
+                    <p>Loading shop please wait...</p>
                 `;
+                document.body.appendChild(overlay);
+            }
+
+            hideLoading() {
+                const existingOverlay = document.getElementById('global-loading-overlay');
+                if (existingOverlay) {
+                    existingOverlay.remove();
+                }
             }
 
             showError(message) {
