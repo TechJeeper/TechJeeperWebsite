@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechJeeper Designs - Shop for Handmade & 3D Printed Creations</title>
     <meta name="description" content="Browse the TechJeeper Designs shop for unique handmade and 3D printed creations, including fiber arts, jewelry, and more. 5% of all sales are donated to the Colorectal Cancer Alliance.">
-    <meta name="keywords" content="TechJeeper, shop, 3D printed, handmade, fiber arts, jewelry, Ko-Fi, maker, creations, custom designs, tech-inspired, charity, Colorectal Cancer Alliance, gifts, unique">
+    <meta name="keywords" content="TechJeeper, shop, 3D printed, handmade, fiber arts, jewelry, maker, creations, custom designs, tech-inspired, charity, Colorectal Cancer Alliance, gifts, unique">
     <meta name="author" content="TechJeeper Designs">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -58,16 +58,7 @@
             <span>C</span><span>r</span><span>e</span><span>a</span><span>t</span><span>i</span><span>o</span><span>n</span><span>s</span>
         </p>
         
-        <div class="category-filters">
-            <button class="category-btn active" data-category="all">All Items</button>
-            <button class="category-btn" data-category="etsy">Etsy</button>
-            <button class="category-btn" data-category="3dprinted">3D Printed</button>
-            <button class="category-btn" data-category="fiberarts">Fiber Arts</button>
-            <button class="category-btn" data-category="jewelry">Jewlery</button>
-            <button class="shuffle-btn" id="shuffle-items">
-                <i class="fas fa-random"></i> Shuffle
-            </button>
-        </div>
+        <div class="category-filters" id="category-filters"></div>
         
         <div class="shop-grid" id="shop-items">
         </div>
@@ -110,29 +101,35 @@
             }
         });
 
-        // Shop Manager for Ko-Fi and Etsy Integration
+        // Shop Manager for Etsy Integration
         class ShopManager {
             constructor() {
                 this.shopContainer = document.getElementById('shop-items');
-                this.categoryBtns = document.querySelectorAll('.category-btn');
+                this.categoryFiltersContainer = document.getElementById('category-filters');
+
                 this.currentCategory = 'all';
                 this.items = [];
                 this.allItems = [];
                 this.etsyItems = [];
                 this.isFetching = false;
 
-                // Map of UI category names to Ko-Fi category IDs
-                this.kofiCategoryMap = {
-                    '3dprinted': [634658],
-                    'fiberarts': [649067, 661243], // Including multiple IDs if necessary
-                    'jewelry': [690483]
+                // Category labels for the top filter buttons
+                this.categoryLabels = {
+                    all: 'All Items',
+                    '3dprinted': '3D Printed',
+                    'fiberarts': 'Fiber Arts',
+                    'jewelry': 'Jewelry',
+                    other: 'Other'
                 };
 
                 this.init();
             }
 
             async init() {
-                this.addEventListeners();
+                // Get category from URL parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const categoryParam = urlParams.get('category');
+                if (categoryParam) this.currentCategory = categoryParam;
 
                 // Load from sessionStorage if available
                 const cachedData = sessionStorage.getItem('shopItemsCache');
@@ -142,104 +139,215 @@
                 let hasCache = false;
                 if (cachedData && cacheTime && (Date.now() - parseInt(cacheTime) < CACHE_EXPIRATION_MS)) {
                     try {
-                        this.allItems = JSON.parse(cachedData);
-                        hasCache = true;
-                        console.log('Loaded shop items from sessionStorage cache');
+                        const parsed = JSON.parse(cachedData);
+                        if (Array.isArray(parsed)) {
+                            // Only keep Etsy items (Ko-Fi shop is closed)
+                            this.allItems = parsed.filter(item => item && item.Source === 'Etsy');
+                            hasCache = this.allItems.length > 0;
+                            if (hasCache) console.log('Loaded Etsy shop items from sessionStorage cache');
+                        }
                     } catch (e) {
                         console.error('Error parsing cache', e);
                     }
                 }
 
-                // Get category from URL parameter
-                const urlParams = new URLSearchParams(window.location.search);
-                const categoryParam = urlParams.get('category');
-                
-                if (categoryParam) {
-                    this.currentCategory = categoryParam;
-                    // Find and update the matching category button state
-                    const matchingBtn = Array.from(this.categoryBtns).find(btn => 
-                        btn.dataset.category === categoryParam
-                    );
-                    if (matchingBtn) {
-                        this.categoryBtns.forEach(b => b.classList.remove('active'));
-                        matchingBtn.classList.add('active');
-                    }
-                }
-
-                if (hasCache) {
-                    this.applyCategoryFilter(this.currentCategory);
-                } else {
+                if (!hasCache) {
                     await this.fetchItems();
                 }
+
+                // If fetching failed, `fetchItems()` already rendered an error.
+                if (!this.allItems || this.allItems.length === 0) {
+                    return;
+                }
+
+                // Ensure every item has a computed category key
+                this.normalizeItemCategories();
+
+                // Determine which categories to show
+                const availableCategoryKeys = this.getAvailableCategoryKeys();
+
+                // Validate URL-selected category
+                if (this.currentCategory !== 'all' && !availableCategoryKeys.includes(this.currentCategory)) {
+                    this.currentCategory = 'all';
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('category');
+                    window.history.pushState({}, '', url);
+                }
+
+                this.buildCategoryButtons(availableCategoryKeys);
+                this.applyCategoryFilter(this.currentCategory);
             }
 
-            addEventListeners() {
-                // Category buttons
-                this.categoryBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const category = btn.dataset.category;
-                        this.currentCategory = category;
-                        
-                        // Update URL with the selected category
-                        const url = new URL(window.location.href);
-                        if (category === 'all') {
-                            url.searchParams.delete('category');
-                        } else {
-                            url.searchParams.set('category', category);
-                        }
-                        window.history.pushState({}, '', url);
-                        
-                        // Update active button immediately
-                        this.categoryBtns.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
+            decodeHtmlEntities(str) {
+                // RSS description is often XML/HTML-escaped; decode before parsing.
+                const textarea = document.createElement('textarea');
+                textarea.innerHTML = str;
+                return textarea.value;
+            }
 
-                        // If currently fetching, do not attempt to filter yet.
-                        // We updated this.currentCategory, so when fetch finishes, it will render correctly.
-                        if (this.isFetching) {
-                            return;
-                        }
+            categorizeEtsyItem(title, description) {
+                const text = `${title} ${description}`.toLowerCase();
 
-                        // Add a subtle animation to the shop grid
-                        this.shopContainer.classList.add('fade-out');
-                        
-                        setTimeout(() => {
-                            this.applyCategoryFilter(this.currentCategory);
-                            this.shopContainer.classList.remove('fade-out');
-                        }, 300);
-                    });
+                // Priority order matters.
+                const jewelryPatterns = [
+                    'jewelry', 'jewel', 'earring', 'earrings', 'necklace', 'bracelet',
+                    'pendant', 'resin pendant', 'resin', 'beads'
+                ];
+                const printPatterns = [
+                    '3d printed', '3d', '3-d', 'stl', 'filament', 'print', 'printed model', '3d model'
+                ];
+                const fiberPatterns = [
+                    'fiber arts', 'fiber art', 'fiber', 'crochet', 'knit', 'knitting', 'yarn',
+                    'macrame', 'felt', 'embroidery', 'weaving', 'loom', 'stitch'
+                ];
+
+                const matchesAny = (patterns) => patterns.some(p => text.includes(p));
+
+                if (matchesAny(jewelryPatterns)) return 'jewelry';
+                if (matchesAny(printPatterns)) return '3dprinted';
+                if (matchesAny(fiberPatterns)) return 'fiberarts';
+
+                return 'other';
+            }
+
+            normalizeItemCategories() {
+                this.allItems = (this.allItems || []).filter(Boolean);
+
+                this.allItems.forEach(item => {
+                    const title = item.Name || '';
+                    const desc = item.Description || '';
+                    item.Category = this.categorizeEtsyItem(title, desc);
                 });
-                
-                // Shuffle button
-                const shuffleBtn = document.getElementById('shuffle-items');
-                if (shuffleBtn) {
-                    shuffleBtn.addEventListener('click', () => {
-                        // Animate the button
-                        shuffleBtn.querySelector('i').style.transform = 'rotate(180deg)';
-                        
-                        // Add a subtle animation to the shop grid
-                        this.shopContainer.classList.add('fade-out');
-                        
+            }
+
+            getAvailableCategoryKeys() {
+                const keys = new Set();
+                this.allItems.forEach(item => {
+                    if (!item || !item.Category) return;
+                    keys.add(item.Category);
+                });
+
+                // Prefer stable ordering.
+                const ordered = ['3dprinted', 'fiberarts', 'jewelry', 'other'];
+                return ordered.filter(k => keys.has(k));
+            }
+
+            buildCategoryButtons(availableCategoryKeys) {
+                if (!this.categoryFiltersContainer) return;
+
+                // Clear existing UI (important when using cache vs fresh fetch)
+                this.categoryFiltersContainer.innerHTML = '';
+
+                const addButton = (key, label) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn' + (key === this.currentCategory ? ' active' : '');
+                    btn.dataset.category = key;
+                    btn.type = 'button';
+                    btn.textContent = label;
+                    btn.addEventListener('click', () => this.handleCategoryClick(key));
+                    this.categoryFiltersContainer.appendChild(btn);
+                    return btn;
+                };
+
+                // Default category
+                addButton('all', this.categoryLabels.all);
+
+                // Dynamic sections (derived from Etsy item text)
+                availableCategoryKeys.forEach(key => {
+                    if (key === 'all') return;
+                    addButton(key, this.categoryLabels[key] || key);
+                });
+
+                // Shuffle button (kept last)
+                const shuffleBtn = document.createElement('button');
+                shuffleBtn.className = 'shuffle-btn';
+                shuffleBtn.id = 'shuffle-items';
+                shuffleBtn.type = 'button';
+                shuffleBtn.innerHTML = '<i class="fas fa-random"></i> Shuffle';
+                shuffleBtn.addEventListener('click', () => {
+                    const icon = shuffleBtn.querySelector('i');
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+
+                    this.shopContainer.classList.add('fade-out');
+                    setTimeout(() => {
+                        this.shuffleItems();
+                        this.renderItems();
+                        this.shopContainer.classList.remove('fade-out');
+
                         setTimeout(() => {
-                            // Shuffle items and re-render
-                            this.shuffleItems();
-                            this.renderItems();
-                            
-                            // Reset the animation
-                            this.shopContainer.classList.remove('fade-out');
-                            
-                            // Reset the button animation after a delay
-                            setTimeout(() => {
-                                shuffleBtn.querySelector('i').style.transform = '';
-                            }, 500);
-                        }, 300);
-                    });
+                            if (icon) icon.style.transform = '';
+                        }, 500);
+                    }, 300);
+                });
+                this.categoryFiltersContainer.appendChild(shuffleBtn);
+            }
+
+            handleCategoryClick(category) {
+                this.currentCategory = category;
+
+                // Update URL with the selected category
+                const url = new URL(window.location.href);
+                if (category === 'all') {
+                    url.searchParams.delete('category');
+                } else {
+                    url.searchParams.set('category', category);
+                }
+                window.history.pushState({}, '', url);
+
+                // Update active button immediately
+                const btns = this.categoryFiltersContainer.querySelectorAll('.category-btn');
+                btns.forEach(b => b.classList.remove('active'));
+                const activeBtn = Array.from(btns).find(b => b.dataset.category === category);
+                if (activeBtn) activeBtn.classList.add('active');
+
+                // Add a subtle animation to the shop grid
+                this.shopContainer.classList.add('fade-out');
+                setTimeout(() => {
+                    this.applyCategoryFilter(this.currentCategory);
+                    this.shopContainer.classList.remove('fade-out');
+                }, 300);
+            }
+
+            async fetchItems() {
+                if (this.allItems.length !== 0) return;
+
+                this.isFetching = true;
+                this.showLoading();
+
+                await this.fetchEtsyItems();
+                this.allItems = [...(this.etsyItems || [])];
+
+                this.isFetching = false;
+
+                if (this.allItems.length === 0) {
+                    this.showError(`
+                        <h3>Unable to fetch items from Etsy</h3>
+                        <p>The Etsy RSS feed may be unavailable or blocked by CORS.</p>
+                        <p>Please try again later or visit your shop directly:</p>
+                        <p>
+                            <a href="https://www.etsy.com/shop/TechJeeperDesigns" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 5px auto;">Visit Etsy Shop</a>
+                        </p>
+                    `);
+                    return;
+                }
+
+                this.cacheItems();
+            }
+
+            cacheItems() {
+                if (!this.allItems || this.allItems.length === 0) return;
+                try {
+                    sessionStorage.setItem('shopItemsCache', JSON.stringify(this.allItems));
+                    sessionStorage.setItem('shopItemsCacheTime', Date.now().toString());
+                } catch (e) {
+                    console.warn('Could not save to sessionStorage:', e);
                 }
             }
 
             async fetchEtsyItems() {
                 try {
                     const rssUrl = 'https://www.etsy.com/shop/TechJeeperDesigns/rss';
-                    // Using AllOrigins as it reliably handles XML responses
+                    // AllOrigins is used to reliably handle XML responses + CORS.
                     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
 
                     const response = await fetch(proxyUrl);
@@ -249,202 +357,72 @@
                     if (!data.contents) throw new Error('No content in Etsy feed response');
 
                     const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+                    const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
                     const items = xmlDoc.querySelectorAll('item');
 
                     this.etsyItems = Array.from(items).map(item => {
                         const title = item.querySelector('title')?.textContent || 'Untitled';
                         const link = item.querySelector('link')?.textContent || '#';
-                        const description = item.querySelector('description')?.textContent || '';
 
-                        // Extract price
-                        const priceMatch = description.match(/<p class="price">(.+?)<\/p>/);
-                        const price = priceMatch ? priceMatch[1] : 'Check Etsy';
+                        const rawDesc = item.querySelector('description')?.textContent || '';
+                        const decodedDesc = this.decodeHtmlEntities(rawDesc);
+                        const descDoc = parser.parseFromString(decodedDesc, 'text/html');
 
-                        // Extract image
-                        const imgMatch = description.match(/<img src="(.+?)"/);
-                        const thumbnail = imgMatch ? imgMatch[1] : 'assets/img/placeholder.png';
+                        const priceText = descDoc.querySelector('.price')?.textContent?.trim();
+                        const price = priceText || 'Check Etsy';
 
-                        // Clean up description (remove HTML tags)
-                        const cleanDesc = description.replace(/<[^>]*>/g, '').replace(/Check out this item on Etsy/g, '').trim().substring(0, 100) + '...';
+                        const imgEl = descDoc.querySelector('img');
+                        const thumbnail = imgEl?.getAttribute('src') || 'assets/img/placeholder.png';
+
+                        const descriptionText =
+                            descDoc.querySelector('.description')?.textContent?.trim() ||
+                            descDoc.body.textContent?.trim() ||
+                            '';
+
+                        const cleanDescBase = descriptionText
+                            .replace(/Check out this item on Etsy/g, '')
+                            .replace(/\s+/g, ' ')
+                            .trim();
+
+                        const cleanDesc = cleanDescBase.substring(0, 100) + (cleanDescBase.length > 100 ? '...' : '');
+
+                        // Stable alias based on listing link
+                        const listingIdMatch = link.match(/\/listing\/(\d+)/);
+                        const listingId = listingIdMatch ? listingIdMatch[1] : Math.random().toString(36).substr(2, 9);
+
+                        const category = this.categorizeEtsyItem(title, cleanDesc);
 
                         return {
                             Name: title,
                             Description: cleanDesc,
                             Price: price,
                             ThumbnailUrls: [thumbnail],
-                            Alias: `etsy-${Math.random().toString(36).substr(2, 9)}`,
+                            Alias: `etsy-${listingId}`,
                             Link: link,
                             Source: 'Etsy',
-                            IsSoldOut: false
+                            IsSoldOut: false,
+                            Category: category
                         };
                     });
 
                     console.log(`Fetched ${this.etsyItems.length} Etsy items`);
                 } catch (error) {
                     console.error('Error fetching Etsy items:', error);
-                    // Fallback to empty array if fetch fails, so we don't break the whole shop
                     this.etsyItems = [];
                 }
             }
 
-            async fetchItems() {
-                // Only perform network fetch if we haven't loaded items yet
-                if (this.allItems.length === 0) {
-                    this.isFetching = true;
-                    this.showLoading();
-
-                    // Start fetching Etsy items concurrently
-                    let etsyPromise = this.fetchEtsyItems();
-
-                    const maxRetries = 2;
-                    let currentRetry = 0;
-                    let koFiData = [];
-
-                    while (currentRetry < maxRetries) {
-                        try {
-                            // Fetch ALL Ko-Fi items (no category filter in URL)
-                            let targetUrl = `https://ko-fi.com/shop/T6T8XAPY5/items/0/100?productType=0`;
-
-                            // Use reliable CORS proxies
-                            const corsProxies = [
-                                'https://api.allorigins.win/raw?url=',
-                                'https://api.allorigins.win/get?url=',
-                                'https://api.codetabs.com/v1/proxy?quest=',
-                                'https://corsproxy.io/?'
-                            ];
-
-                            // Fire all proxy requests concurrently and race them
-                            const fetchPromises = corsProxies.map(async (proxy) => {
-                                try {
-                                    const apiUrl = proxy + encodeURIComponent(targetUrl);
-                                    console.log(`Trying CORS proxy: ${proxy}`);
-
-                                    const response = await fetch(apiUrl, {
-                                        headers: {
-                                            'accept': 'application/json, text/javascript, */*; q=0.01',
-                                            'x-requested-with': 'XMLHttpRequest'
-                                        }
-                                    });
-
-                                    if (!response.ok) {
-                                        throw new Error(`Proxy ${proxy} failed with status: ${response.status}`);
-                                    }
-
-                                    // Handle different response formats from different proxies
-                                    if (proxy === 'https://api.allorigins.win/get?url=') {
-                                        const result = await response.json();
-                                        // AllOrigins wraps the response in a "contents" property
-                                        if (result && result.contents) {
-                                            let parsed = typeof result.contents === 'string' ? JSON.parse(result.contents) : result.contents;
-                                            if (typeof parsed === 'string') parsed = JSON.parse(parsed); // Handle double-stringified JSON
-                                            if (!Array.isArray(parsed)) throw new Error('Parsed Ko-Fi data is not an array');
-                                            return parsed;
-                                        } else {
-                                            throw new Error(`Invalid response format from AllOrigins proxy`);
-                                        }
-                                    } else {
-                                        // Direct JSON response from other proxies
-                                        const res = await response.json();
-                                        // Some proxies might also wrap in contents depending on their API changes
-                                        let parsed = res.contents ? (typeof res.contents === 'string' ? JSON.parse(res.contents) : res.contents) : res;
-                                        if (typeof parsed === 'string') parsed = JSON.parse(parsed);
-                                        if (!Array.isArray(parsed)) throw new Error('Parsed Ko-Fi data is not an array');
-                                        return parsed;
-                                    }
-                                } catch (error) {
-                                    // Rethrow the error so Promise.any can catch it
-                                    throw error;
-                                }
-                            });
-
-                            try {
-                                // Promise.any resolves with the first successful promise
-                                koFiData = await Promise.any(fetchPromises);
-                                console.log("Successfully fetched all Ko-Fi data from a proxy.");
-                            } catch (aggregateError) {
-                                console.warn("All CORS proxies failed:");
-                                aggregateError.errors.forEach(e => console.warn(e));
-                                throw new Error('All proxies failed');
-                            }
-
-                            break; // Success - exit the retry loop
-
-                        } catch (error) {
-                            currentRetry++;
-                            console.warn(`Attempt ${currentRetry} of ${maxRetries} failed:`, error);
-
-                            if (currentRetry === maxRetries) {
-                                console.error('All retry attempts to fetch Ko-Fi items failed:', error);
-                            } else {
-                                // Wait a bit before retrying (exponential backoff)
-                                await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, currentRetry)));
-                            }
-                        }
-                    }
-
-                    // Await etsy fetch completion
-                    await etsyPromise;
-
-                    // Cache the combined dataset
-                    this.allItems = [...(koFiData || []), ...this.etsyItems];
-
-                    if (this.allItems.length > 0) {
-                        try {
-                            sessionStorage.setItem('shopItemsCache', JSON.stringify(this.allItems));
-                            sessionStorage.setItem('shopItemsCacheTime', Date.now().toString());
-                        } catch (e) {
-                            console.warn('Could not save to sessionStorage:', e);
-                        }
-                    }
-
-                    this.isFetching = false;
-                }
-
-                // If all fetching failed completely
-                if (this.allItems.length === 0) {
-                     this.showError(`
-                        <h3>Unable to fetch items from Ko-Fi and Etsy</h3>
-                        <p>The APIs may be unavailable or have CORS restrictions.</p>
-                        <p>Please try again later or visit the shops directly:</p>
-                        <p>
-                            <a href="https://ko-fi.com/techjeeper/shop" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 5px auto;">Visit Ko-Fi Shop</a>
-                            <a href="https://www.etsy.com/shop/TechJeeperDesigns" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 5px auto;">Visit Etsy Shop</a>
-                        </p>
-                    `);
-                    return;
-                }
-
-                this.applyCategoryFilter(this.currentCategory);
-            }
-
             applyCategoryFilter(category) {
-                // Ensure category is properly handled and fallback to all if not found
                 category = category || 'all';
 
                 if (category === 'all') {
                     this.items = [...this.allItems];
-                } else if (category === 'etsy') {
-                    this.items = this.allItems.filter(item => item.Source === 'Etsy');
                 } else {
-                    // It's a Ko-Fi category filter
-                    const mappedIds = this.kofiCategoryMap[category] || [];
-                    this.items = this.allItems.filter(item => {
-                        // Exclude Etsy items (which don't have ShopCategoryIds)
-                        if (item.Source === 'Etsy') return false;
-
-                        // Check if item has a matching category ID
-                        if (item.ShopCategoryIds) {
-                            const ids = Array.isArray(item.ShopCategoryIds) ? item.ShopCategoryIds : [item.ShopCategoryIds];
-                            return ids.some(id => mappedIds.includes(Number(id)) || mappedIds.includes(String(id)));
-                        }
-                        return false;
-                    });
+                    this.items = this.allItems.filter(item => item && item.Category === category);
                 }
 
-                // Shuffle items to randomize the display order, similar to previous behavior
+                // Shuffle items to randomize the display order
                 this.shuffleItems();
-
                 this.renderItems();
             }
 
@@ -479,16 +457,11 @@
                 }
                 
                 const itemsHTML = this.items.map((item, index) => {
-                    // Handle image URL formatting
+                    // Handle image URL formatting (Etsy gives full URLs)
                     let imageUrl = 'assets/img/placeholder.png';
                     if (item.ThumbnailUrls && item.ThumbnailUrls.length > 0) {
-                        // Check if the URL is already a full URL
-                        if (item.ThumbnailUrls[0].startsWith('http') || item.ThumbnailUrls[0].startsWith('assets/')) {
-                            imageUrl = item.ThumbnailUrls[0];
-                        } else {
-                            // If not, assume it's just the filename and construct the full URL
-                            imageUrl = `https://storage.ko-fi.com/cdn/useruploads/display/${item.ThumbnailUrls[0]}`;
-                        }
+                        const candidate = item.ThumbnailUrls[0];
+                        if (candidate.startsWith('http') || candidate.startsWith('assets/')) imageUrl = candidate;
                     }
                     
                     // Handle sold-out status
@@ -512,11 +485,7 @@
                         `<div class="featured-badge">Featured Item</div>` : '';
 
                     // Determine Link URL
-                    let itemLink = item.Link;
-                    if (!itemLink) {
-                         // Default to Ko-Fi link structure if not explicitly provided
-                         itemLink = `https://ko-fi.com/s/${item.Alias}`;
-                    }
+                    const itemLink = item.Link || 'https://www.etsy.com/shop/TechJeeperDesigns';
 
                     // Source Badge (Optional, but good for UX)
                     const sourceBadge = item.Source ? `<div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:4px 8px; border-radius:4px; font-size:12px;">${item.Source}</div>` : '';
