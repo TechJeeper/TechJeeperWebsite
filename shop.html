@@ -62,6 +62,9 @@
         
         <div class="shop-grid" id="shop-items">
         </div>
+
+        <!-- Fallback: Etsy's own mini shop widget (used when RSS is blocked by CORS) -->
+        <div id="etsy-mini-fallback" style="display:none; width:100%; overflow-x:auto; margin-top: 20px;"></div>
     </main>
 
     <script>
@@ -106,12 +109,22 @@
             constructor() {
                 this.shopContainer = document.getElementById('shop-items');
                 this.categoryFiltersContainer = document.getElementById('category-filters');
+                this.etsyMiniFallbackContainer = document.getElementById('etsy-mini-fallback');
+
+                // Bump this whenever categorization logic changes so we don't
+                // reuse previously mis-categorized cached items.
+                this.shopItemsCacheVersion = '2';
 
                 this.currentCategory = 'all';
                 this.items = [];
                 this.allItems = [];
                 this.etsyItems = [];
                 this.isFetching = false;
+                this.etsyMiniRendered = false;
+
+                // Working shop id found from your browser test:
+                // new Etsy.Mini(29150206,'gallery',6,1,1,'https://www.etsy.com');
+                this.etsyMiniShopId = 29150206;
 
                 // Category labels for the top filter buttons
                 this.categoryLabels = {
@@ -134,10 +147,16 @@
                 // Load from sessionStorage if available
                 const cachedData = sessionStorage.getItem('shopItemsCache');
                 const cacheTime = sessionStorage.getItem('shopItemsCacheTime');
+                const cacheVersion = sessionStorage.getItem('shopItemsCacheVersion');
                 const CACHE_EXPIRATION_MS = 60 * 60 * 1000; // 1 hour
 
                 let hasCache = false;
-                if (cachedData && cacheTime && (Date.now() - parseInt(cacheTime) < CACHE_EXPIRATION_MS)) {
+                if (
+                    cachedData &&
+                    cacheTime &&
+                    cacheVersion === this.shopItemsCacheVersion &&
+                    (Date.now() - parseInt(cacheTime) < CACHE_EXPIRATION_MS)
+                ) {
                     try {
                         const parsed = JSON.parse(cachedData);
                         if (Array.isArray(parsed)) {
@@ -188,26 +207,70 @@
             categorizeEtsyItem(title, description) {
                 const text = `${title} ${description}`.toLowerCase();
 
-                // Priority order matters.
-                const jewelryPatterns = [
-                    'jewelry', 'jewel', 'earring', 'earrings', 'necklace', 'bracelet',
-                    'pendant', 'resin pendant', 'resin', 'beads'
-                ];
-                const printPatterns = [
-                    '3d printed', '3d', '3-d', 'stl', 'filament', 'print', 'printed model', '3d model'
-                ];
-                const fiberPatterns = [
-                    'fiber arts', 'fiber art', 'fiber', 'crochet', 'knit', 'knitting', 'yarn',
-                    'macrame', 'felt', 'embroidery', 'weaving', 'loom', 'stitch'
-                ];
+                // Scoring-based classification to avoid one keyword (like "resin")
+                // forcing everything into the "jewelry" bucket.
+                const score = {
+                    '3dprinted': 0,
+                    'fiberarts': 0,
+                    'jewelry': 0,
+                    'other': 0
+                };
 
-                const matchesAny = (patterns) => patterns.some(p => text.includes(p));
+                const addIfIncludes = (key, phrase, points) => {
+                    if (text.includes(phrase)) score[key] += points;
+                };
 
-                if (matchesAny(jewelryPatterns)) return 'jewelry';
-                if (matchesAny(printPatterns)) return '3dprinted';
-                if (matchesAny(fiberPatterns)) return 'fiberarts';
+                // Jewelry (prefer explicit jewelry terms)
+                addIfIncludes('jewelry', 'earring', 6);
+                addIfIncludes('jewelry', 'necklace', 6);
+                addIfIncludes('jewelry', 'bracelet', 5);
+                addIfIncludes('jewelry', 'ring', 4);
+                addIfIncludes('jewelry', 'pendant', 5);
+                addIfIncludes('jewelry', 'charm', 4);
+                addIfIncludes('jewelry', 'jewelry', 6);
+                addIfIncludes('jewelry', 'jewel', 3);
+                addIfIncludes('jewelry', 'beads', 3);
+                // "resin" alone is ambiguous; keep it low weight.
+                addIfIncludes('jewelry', 'resin pendant', 7);
+                addIfIncludes('jewelry', 'resin', 1);
 
-                return 'other';
+                // 3D printed / model
+                addIfIncludes('3dprinted', '3d printed', 8);
+                addIfIncludes('3dprinted', 'stl', 7);
+                addIfIncludes('3dprinted', 'filament', 6);
+                addIfIncludes('3dprinted', 'printed model', 6);
+                addIfIncludes('3dprinted', '3d model', 5);
+                addIfIncludes('3dprinted', '3-d', 4);
+                // Generic "3d" can appear in many contexts; low weight.
+                addIfIncludes('3dprinted', '3d', 1);
+                addIfIncludes('3dprinted', 'print', 2);
+
+                // Fiber arts
+                addIfIncludes('fiberarts', 'crochet', 8);
+                addIfIncludes('fiberarts', 'knit', 7);
+                addIfIncludes('fiberarts', 'yarn', 6);
+                addIfIncludes('fiberarts', 'macrame', 7);
+                addIfIncludes('fiberarts', 'felt', 6);
+                addIfIncludes('fiberarts', 'embroidery', 5);
+                addIfIncludes('fiberarts', 'weaving', 5);
+                addIfIncludes('fiberarts', 'loom', 4);
+                addIfIncludes('fiberarts', 'stitch', 3);
+                addIfIncludes('fiberarts', 'fiber arts', 6);
+                addIfIncludes('fiberarts', 'fiber art', 6);
+                addIfIncludes('fiberarts', 'fiber', 2);
+
+                const orderedKeys = ['3dprinted', 'fiberarts', 'jewelry', 'other'];
+                let bestKey = 'other';
+                let bestScore = 0;
+
+                for (const k of orderedKeys) {
+                    if (score[k] > bestScore) {
+                        bestScore = score[k];
+                        bestKey = k;
+                    }
+                }
+
+                return bestScore > 0 ? bestKey : 'other';
             }
 
             normalizeItemCategories() {
@@ -215,7 +278,7 @@
 
                 this.allItems.forEach(item => {
                     const title = item.Name || '';
-                    const desc = item.Description || '';
+                    const desc = item.DescriptionForCategory || item.Description || '';
                     item.Category = this.categorizeEtsyItem(title, desc);
                 });
             }
@@ -253,8 +316,10 @@
                 addButton('all', this.categoryLabels.all);
 
                 // Dynamic sections (derived from Etsy item text)
-                availableCategoryKeys.forEach(key => {
-                    if (key === 'all') return;
+                // Always show the known sections so the UI doesn't "collapse" to only one category.
+                // Clicking an empty section will show the existing "No items found" message.
+                const fixedKeys = ['3dprinted', 'fiberarts', 'jewelry', 'other'];
+                fixedKeys.forEach(key => {
                     addButton(key, this.categoryLabels[key] || key);
                 });
 
@@ -320,9 +385,11 @@
                 this.isFetching = false;
 
                 if (this.allItems.length === 0) {
+                    this.showEtsyMiniFallback();
                     this.showError(`
                         <h3>Unable to fetch items from Etsy</h3>
                         <p>The Etsy RSS feed may be unavailable or blocked by CORS.</p>
+                        <p>Showing the Etsy mini shop widget instead (may not include your custom section filters).</p>
                         <p>Please try again later or visit your shop directly:</p>
                         <p>
                             <a href="https://www.etsy.com/shop/TechJeeperDesigns" target="_blank" class="shop-item-button" style="max-width: 200px; margin: 5px auto;">Visit Etsy Shop</a>
@@ -334,11 +401,49 @@
                 this.cacheItems();
             }
 
+            showEtsyMiniFallback() {
+                if (!this.etsyMiniFallbackContainer) return;
+                if (this.etsyMiniRendered) return;
+
+                this.etsyMiniRendered = true;
+                this.etsyMiniFallbackContainer.style.display = 'block';
+                this.shopContainer.classList.remove('is-loading');
+                this.shopContainer.style.opacity = '1';
+
+                // Inject Etsy's widget scripts at runtime.
+                // This avoids loading third-party JS unless we actually need it.
+                this.etsyMiniFallbackContainer.innerHTML = '';
+
+                const script = document.createElement('script');
+                script.src = 'https://www.etsy.com/assets/js/etsy_mini_shop.js';
+                script.async = true;
+
+                script.onload = () => {
+                    try {
+                        if (!window.Etsy || !window.Etsy.Mini) {
+                            throw new Error('Etsy.Mini not available after script load');
+                        }
+                        // Your working snippet:
+                        // new Etsy.Mini(29150206,'gallery',6,1,1,'https://www.etsy.com');
+                        new window.Etsy.Mini(this.etsyMiniShopId, 'gallery', 6, 1, 1, 'https://www.etsy.com');
+                    } catch (e) {
+                        console.error('Failed to render Etsy mini shop widget:', e);
+                    }
+                };
+
+                script.onerror = () => {
+                    console.error('Failed to load Etsy mini shop script');
+                };
+
+                this.etsyMiniFallbackContainer.appendChild(script);
+            }
+
             cacheItems() {
                 if (!this.allItems || this.allItems.length === 0) return;
                 try {
                     sessionStorage.setItem('shopItemsCache', JSON.stringify(this.allItems));
                     sessionStorage.setItem('shopItemsCacheTime', Date.now().toString());
+                    sessionStorage.setItem('shopItemsCacheVersion', this.shopItemsCacheVersion);
                 } catch (e) {
                     console.warn('Could not save to sessionStorage:', e);
                 }
@@ -347,18 +452,72 @@
             async fetchEtsyItems() {
                 try {
                     const rssUrl = 'https://www.etsy.com/shop/TechJeeperDesigns/rss';
-                    // AllOrigins is used to reliably handle XML responses + CORS.
-                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rssUrl)}`;
-
-                    const response = await fetch(proxyUrl);
-                    if (!response.ok) throw new Error('Failed to fetch Etsy feed');
-
-                    const data = await response.json();
-                    if (!data.contents) throw new Error('No content in Etsy feed response');
+                    // Etsy RSS is blocked by CORS in the browser, so we use multiple public proxies.
+                    // (Which proxy works can change over time, so we fallback.)
+                    const proxies = [
+                        {
+                            name: 'allorigins-get',
+                            buildUrl: (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+                            parseResponse: async (res) => {
+                                const data = await res.json();
+                                if (!data || !data.contents) throw new Error('Invalid AllOrigins response');
+                                return data.contents;
+                            }
+                        },
+                        {
+                            name: 'allorigins-raw',
+                            buildUrl: (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                            parseResponse: async (res) => await res.text()
+                        },
+                        {
+                            name: 'codetabs',
+                            buildUrl: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                            parseResponse: async (res) => await res.text()
+                        },
+                        {
+                            name: 'corsproxy',
+                            buildUrl: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+                            parseResponse: async (res) => await res.text()
+                        }
+                    ];
 
                     const parser = new DOMParser();
-                    const xmlDoc = parser.parseFromString(data.contents, 'text/xml');
+
+                    let xmlText = null;
+                    const errors = [];
+                    // Try proxies sequentially; stop at the first one that returns RSS with <item> elements.
+                    for (const proxy of proxies) {
+                        try {
+                            const proxyUrl = proxy.buildUrl(rssUrl);
+                            const response = await fetch(proxyUrl, { headers: { 'accept': 'application/xml,text/xml,*/*' } });
+                            if (!response.ok) throw new Error(`${proxy.name} failed with ${response.status}`);
+
+                            const bodyText = await proxy.parseResponse(response);
+                            if (!bodyText) throw new Error(`${proxy.name} returned empty body`);
+
+                            const testDoc = parser.parseFromString(bodyText, 'text/xml');
+                            const testItems = testDoc.querySelectorAll('item');
+                            if (testItems && testItems.length > 0) {
+                                xmlText = bodyText;
+                                break;
+                            }
+
+                            errors.push(`${proxy.name}: parsed RSS but contained 0 <item> elements`);
+                        } catch (e) {
+                            errors.push(`${proxy.name}: ${e && e.message ? e.message : e}`);
+                        }
+                    }
+
+                    if (!xmlText) {
+                        throw new Error(`All Etsy RSS proxies failed. ${errors.slice(0, 3).join(' | ')}`);
+                    }
+
+                    // Parse RSS XML into item nodes.
+                    const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
                     const items = xmlDoc.querySelectorAll('item');
+                    if (!items || items.length === 0) {
+                        throw new Error(`RSS parsed but contained 0 items. ${errors.slice(0, 3).join(' | ')}`);
+                    }
 
                     this.etsyItems = Array.from(items).map(item => {
                         const title = item.querySelector('title')?.textContent || 'Untitled';
@@ -390,11 +549,14 @@
                         const listingIdMatch = link.match(/\/listing\/(\d+)/);
                         const listingId = listingIdMatch ? listingIdMatch[1] : Math.random().toString(36).substr(2, 9);
 
-                        const category = this.categorizeEtsyItem(title, cleanDesc);
+                        // Use the full (non-truncated) text for categorization,
+                        // but keep the truncated version for the UI.
+                        const category = this.categorizeEtsyItem(title, cleanDescBase);
 
                         return {
                             Name: title,
                             Description: cleanDesc,
+                            DescriptionForCategory: cleanDescBase,
                             Price: price,
                             ThumbnailUrls: [thumbnail],
                             Alias: `etsy-${listingId}`,
@@ -427,6 +589,8 @@
             }
 
             renderItems() {
+                this.shopContainer.classList.remove('is-loading');
+                this.shopContainer.style.opacity = '1';
                 if (!this.items || this.items.length === 0) {
                     this.shopContainer.innerHTML = `
                         <div class="error-message">
@@ -564,15 +728,25 @@
             }
 
             showLoading() {
+                this.shopContainer.classList.add('is-loading');
                 this.shopContainer.innerHTML = `
-                    <div class="loading-overlay">
-                        <i class="fas fa-spinner fa-spin fa-4x"></i>
-                        <p>Loading shop please wait...</p>
+                    <div class="loading-overlay" role="status" aria-live="polite">
+                        <div class="loading-card">
+                            <div class="loading-row">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <span>Loading shop...</span>
+                            </div>
+                            <div class="loading-bar" aria-hidden="true">
+                                <div class="loading-bar-fill"></div>
+                            </div>
+                        </div>
                     </div>
                 `;
             }
 
             showError(message) {
+                this.shopContainer.classList.remove('is-loading');
+                this.shopContainer.style.opacity = '1';
                 this.shopContainer.innerHTML = `
                     <div class="error-message">
                         <i class="fas fa-exclamation-circle fa-2x"></i>
