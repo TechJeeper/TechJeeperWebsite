@@ -17,21 +17,21 @@ class ShopHighlights {
                 title: 'Custom Jeep Design T-Shirt',
                 description: 'Limited edition off-road inspired design',
                 price: '$24.99',
-                link: 'https://ko-fi.com/techjeeper/shop'
+                link: 'https://Etsy.techjeeper.com'
             },
             {
                 image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFkdmVudHVyZSBTdGlja2VyIFBhY2s8L3RleHQ+PC9zdmc+',
                 title: 'Adventure Sticker Pack',
                 description: 'Set of 5 waterproof vinyl stickers',
                 price: '$12.99',
-                link: 'https://ko-fi.com/techjeeper/shop'
+                link: 'https://Etsy.techjeeper.com'
             },
             {
                 image: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMkEyQTJBIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzAwQkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRpZ2l0YWwgQXJ0IFByaW50PC90ZXh0Pjwvc3ZnPg==',
                 title: 'Digital Art Print',
                 description: 'High-quality 12x18 print',
                 price: '$19.99',
-                link: 'https://ko-fi.com/techjeeper/shop'
+                link: 'https://Etsy.techjeeper.com'
             }
         ];
         
