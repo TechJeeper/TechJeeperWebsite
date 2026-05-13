@@ -1064,3 +1064,13 @@ footer a {
 footer a:hover {
     color: var(--accent-color);
 }
+
+/* Portfolio specific scroll adjustments */
+#portfolio {
+    overflow-y: auto;
+    justify-content: flex-start;
+}
+
+#portfolio .home-content {
+    margin: 120px auto 80px auto;
+}
