@@ -1,28 +1,102 @@
 
 /* assets/css/affiliates.css */
 
-#affiliates.section {
+#support.section {
     position: relative;
     height: auto;
     min-height: 100vh;
 }
 
-.affiliates-intro {
+.support-content {
+    max-width: 1000px;
+}
+
+.page-intro {
     text-align: center;
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
+    max-width: 700px;
+    margin: 1.5rem auto 2rem;
+    padding: 0 1rem;
+    color: var(--text-secondary);
+}
+
+.support-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+}
+
+.support-card {
     background: var(--secondary-bg);
-    border-radius: 1rem;
+    border-radius: 0.75rem;
+    padding: 1.75rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 191, 255, 0.15);
+    border-color: rgba(0, 191, 255, 0.3);
+}
+
+.support-card i {
+    font-size: 2rem;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.support-card:hover i {
+    transform: scale(1.1);
+    color: var(--accent-hover);
+}
+
+.support-card h3 {
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    margin-bottom: 0.5rem;
+}
+
+.support-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.section-header {
+    color: var(--accent-color);
+    font-size: 1.75rem;
+    font-weight: 600;
+    text-align: center;
+    margin: 0 0 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.section-subheader {
+    text-align: center;
+    max-width: 650px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
 .affiliates-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    padding: 0;
+    gap: 1.25rem;
+    padding: 0 1rem;
     max-width: 1000px;
-    margin: 2rem auto;
+    margin: 0 auto 2rem;
 }
 
 @media (min-width: 992px) {
@@ -34,7 +108,7 @@
 .affiliate-card {
     background: var(--secondary-bg);
     border-radius: 0.5rem;
-    padding: 1.5rem;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -51,9 +125,9 @@
 
 .affiliate-card h4 {
     color: var(--accent-color);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     margin-top: 0;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     transition: color 0.3s ease;
 }
 
@@ -64,14 +138,17 @@
 .affiliate-card p {
     margin-bottom: 1rem;
     flex-grow: 1;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 .discount-code {
     background: var(--accent-color);
     color: var(--primary-bg);
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.75rem;
     border-radius: 0.25rem;
     font-weight: 500;
+    font-size: 0.85rem;
 }
 
 /* Override fixed footer for scrolling page */
