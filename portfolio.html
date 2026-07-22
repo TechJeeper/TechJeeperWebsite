@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechJeeper Designs - Portfolio of Maker & 3D Printing Projects</title>
     <meta name="description" content="Explore the portfolio of TechJeeper Designs, featuring a wide range of maker projects including 3D printing, electronics, software, and more.">
-    <meta name="keywords" content="TechJeeper, portfolio, maker projects, 3D printing, electronics, software, DIY, technology, creative coding, hardware, MakerChip, Printventory, projects, creations">
+    <meta name="keywords" content="TechJeeper, portfolio, maker projects, 3D printing, electronics, software, DIY, technology, creative coding, hardware, MakerChip, Printventory, MakersOnStream, 3DPrintingTools, projects, creations">
     <meta name="author" content="TechJeeper Designs">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -25,6 +25,7 @@
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/animations.css">
+    <link rel="stylesheet" href="assets/css/portfolio.css">
     <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- GSAP -->
@@ -35,64 +36,155 @@
 <body>
     <main class="main-container">
         <section id="portfolio" class="section active">
-            <div class="home-content">
+            <div class="home-content portfolio-page">
                 <a href="index.html"><img src="assets/img/header.png" alt="TechJeeper Designs" class="header-logo"></a>
                 <p class="tagline">
                     <span>P</span><span>o</span><span>r</span><span>t</span><span>f</span><span>o</span><span>l</span><span>i</span><span>o</span>
                 </p>
-                <div class="social-links">
-                    <div class="social-links-row">
-                        <a href="index.html" class="social-link">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </a>
-                        <a href="https://makerchip.app/" target="_blank" class="social-link">
-                            <img src="assets/img/makerchip.png" alt="MakerChip.app" class="social-icon">
-                            <span>MakerChip.app</span>
-                        </a>
-                        <a href="https://printventory.com/" target="_blank" class="social-link">
-                            <img src="assets/img/printventory.png" alt="Printventory" class="social-icon">
-                            <span>Printventory</span>
-                        </a>
-                    </div>
-                    <div class="social-links-row">
-                        <a href="https://makerworld.com/en/@TechJeeper" target="_blank" class="social-link">
-                            <img src="assets/img/makerworld.png" alt="MakerWorld" class="social-icon">
-                            <span>MakerWorld</span>
-                        </a>
-                        <a href="https://thangs.com/designer/TechJeeper%20Designs" target="_blank" class="social-link">
-                            <img src="assets/img/thangs.png" alt="Thangs" class="social-icon">
-                            <span>Thangs</span>
-                        </a>
-                        <a href="https://github.com/TechJeeper" target="_blank" class="social-link">
-                            <i class="fab fa-github"></i>
-                            <span>GitHub</span>
-                        </a>
-                    </div>
-                    <div class="social-links-row">
-                        <a href="https://techjeeper.github.io/CircleQR/" target="_blank" class="social-link">
+
+                <div class="portfolio-nav">
+                    <a href="index.html" class="social-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+
+                <div class="page-intro">
+                    <p>Apps, tools, designs, and community projects from TechJeeper Designs.</p>
+                </div>
+
+                <div class="projects-list">
+                    <a href="https://makerchip.app/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/makerchip.png" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>MakerChip.app</h3>
+                            <p>Catalog and community hub for collectible 3D-printed MakerChips.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://printventory.com/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/printventory.png" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>Printventory</h3>
+                            <p>Desktop app to organize, tag, and track your 3D model library.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://makersonstream.app/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/makersonstream.svg" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>MakersOnStream.app</h3>
+                            <p>Discover makers live-streaming their craft — who's live and what's next.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://3dprintingtools.org/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/3dprintingtools.svg" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>3DPrintingTools.org</h3>
+                            <p>Community catalog of 3D printing software — slicers, utilities, and more.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://techjeeper.github.io/CircleQR/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
                             <i class="fas fa-qrcode"></i>
-                            <span>CircleQR</span>
-                        </a>
-                        <a href="https://diff3mf.techjeeper.com/" target="_blank" class="social-link">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>CircleQR</h3>
+                            <p>Generate circular QR codes for MakerChips, with SVG and STL export.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://diff3mf.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
                             <i class="fas fa-cube"></i>
-                            <span>DIFF3MF</span>
-                        </a>
-                        <a href="https://amzn.to/49lVPZP" target="_blank" class="social-link">
-                            <i class="fas fa-book"></i>
-                            <span>Print. Log. Repeat.</span>
-                        </a>
-                    </div>
-                    <div class="social-links-row">
-                        <a href="http://minimarblemazemaker.techjeeper.com/" target="_blank" class="social-link">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>DIFF3MF</h3>
+                            <p>Compare 3MF files side by side to spot model differences.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="http://minimarblemazemaker.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
                             <i class="fas fa-route"></i>
-                            <span>Mini Marble Maze Maker</span>
-                        </a>
-                        <a href="https://www.hypewheel.app/" target="_blank" class="social-link">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>Mini Marble Maze Maker</h3>
+                            <p>Design and generate custom printable marble mazes in the browser.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://www.hypewheel.app/" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
                             <i class="fas fa-chart-pie"></i>
-                            <span>HypeWheel</span>
-                        </a>
-                    </div>
+                        </div>
+                        <div class="project-card-body">
+                            <h3>HypeWheel</h3>
+                            <p>Interactive wheel for giveaways, polls, and stream moments.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://amzn.to/49lVPZP" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="project-card-body">
+                            <h3>Print. Log. Repeat.</h3>
+                            <p>A maker's journal for logging prints and building better habits.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://makerworld.com/en/@TechJeeper" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/makerworld.png" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>MakerWorld</h3>
+                            <p>3D printable designs and models on MakerWorld.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://thangs.com/designer/TechJeeper%20Designs" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <img src="assets/img/thangs.png" alt="">
+                        </div>
+                        <div class="project-card-body">
+                            <h3>Thangs</h3>
+                            <p>3D models and designs shared on Thangs.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
+
+                    <a href="https://github.com/TechJeeper" target="_blank" rel="noopener noreferrer" class="project-card">
+                        <div class="project-card-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="project-card-body">
+                            <h3>GitHub</h3>
+                            <p>Open-source tools, experiments, and project code.</p>
+                        </div>
+                        <i class="fas fa-arrow-right project-card-arrow" aria-hidden="true"></i>
+                    </a>
                 </div>
             </div>
         </section>

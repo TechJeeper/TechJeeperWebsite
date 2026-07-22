@@ -1,0 +1,172 @@
+/* assets/css/portfolio.css */
+
+#portfolio.section {
+    position: relative;
+    height: auto;
+    min-height: 100vh;
+}
+
+.portfolio-page {
+    max-width: 1100px;
+}
+
+.portfolio-page .page-intro {
+    text-align: center;
+    max-width: 700px;
+    margin: 0.5rem auto 0.5rem;
+    padding: 0 1rem;
+    color: var(--text-secondary);
+}
+
+.projects-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    max-width: 1040px;
+    margin: 1.25rem auto 2rem;
+    padding: 0 1rem;
+    text-align: left;
+}
+
+.project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1rem 1rem 0.9rem;
+    background: var(--secondary-bg);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.6rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: projectCardIn 0.45s ease forwards;
+    height: 100%;
+}
+
+.project-card:nth-child(1) { animation-delay: 0.05s; }
+.project-card:nth-child(2) { animation-delay: 0.1s; }
+.project-card:nth-child(3) { animation-delay: 0.15s; }
+.project-card:nth-child(4) { animation-delay: 0.2s; }
+.project-card:nth-child(5) { animation-delay: 0.25s; }
+.project-card:nth-child(6) { animation-delay: 0.3s; }
+.project-card:nth-child(7) { animation-delay: 0.35s; }
+.project-card:nth-child(8) { animation-delay: 0.4s; }
+.project-card:nth-child(9) { animation-delay: 0.45s; }
+.project-card:nth-child(10) { animation-delay: 0.5s; }
+.project-card:nth-child(11) { animation-delay: 0.55s; }
+.project-card:nth-child(12) { animation-delay: 0.6s; }
+
+@keyframes projectCardIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 191, 255, 0.12);
+    border-color: rgba(0, 191, 255, 0.35);
+}
+
+.project-card-icon {
+    width: 2.15rem;
+    height: 2.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--accent-color);
+    font-size: 1.15rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.project-card-icon img {
+    width: 1.85rem;
+    height: 1.85rem;
+    object-fit: contain;
+}
+
+.project-card:hover .project-card-icon {
+    color: var(--accent-hover);
+    transform: scale(1.08);
+}
+
+.project-card-body {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-card-body h3 {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: color 0.3s ease;
+}
+
+.project-card:hover .project-card-body h3 {
+    color: var(--accent-hover);
+}
+
+.project-card-body p {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+}
+
+.project-card-arrow {
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 0.45rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.project-card:hover .project-card-arrow {
+    color: var(--accent-color);
+    transform: translateX(3px);
+}
+
+.portfolio-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Override fixed footer for scrolling page */
+footer {
+    position: relative;
+}
+
+@media (max-width: 900px) {
+    .projects-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.7rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .projects-list {
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
+    }
+
+    .project-card {
+        padding: 0.95rem 0.9rem;
+    }
+
+    .project-card-body h3 {
+        font-size: 0.98rem;
+    }
+
+    .project-card-body p {
+        font-size: 0.8rem;
+    }
+}
