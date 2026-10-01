@@ -72,6 +72,16 @@
     margin: 0;
 }
 
+.makerworld-support {
+    margin: 0 auto 3rem;
+    padding: 0 1rem;
+}
+
+.makerworld-card {
+    max-width: 340px;
+    margin: 0 auto;
+}
+
 .section-header {
     color: var(--accent-color);
     font-size: 1.75rem;
