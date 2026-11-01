@@ -4,6 +4,8 @@
     position: relative;
     height: auto;
     min-height: 100vh;
+    justify-content: flex-start;
+    padding-bottom: 2rem;
 }
 
 .portfolio-page {

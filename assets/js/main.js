@@ -65,38 +65,6 @@ document.querySelectorAll('.section > *').forEach(element => {
     observer.observe(element);
 });
 
-// Initialize Three.js Background (if needed)
-let scene, camera, renderer;
-function initThreeJS() {
-    scene = new THREE.Scene();
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
-    
-    // Add particles or other 3D elements here
-    
-    camera.position.z = 5;
-    
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
-    }
-    
-    animate();
-}
-
-// Handle Window Resize
-window.addEventListener('resize', () => {
-    if (camera) {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-    }
-    if (renderer) {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-});
-
 // Initialize the site
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize sections
@@ -173,6 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-    
-    initThreeJS();
 }); 
