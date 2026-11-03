@@ -119,6 +119,15 @@
         if (VIEW_META[target]) {
             logLine('NAV', VIEW_META[target].log);
         }
+
+        if (target !== 'home' && window.innerWidth <= 960) {
+            const activeWin = document.querySelector(`.os-view[data-view="${target}"]`);
+            if (activeWin) {
+                setTimeout(() => {
+                    activeWin.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 60);
+            }
+        }
     }
 
     function initStarfield() {

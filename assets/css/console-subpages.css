@@ -368,13 +368,52 @@ body.os-window-open .os-hero .os-tagline {
     letter-spacing: 0.04em;
 }
 
-@media (max-width: 680px) {
-    .os-mod-grid,
-    .os-row-grid {
-        grid-template-columns: 1fr;
+@media (max-width: 960px) {
+    body.os-window-open .os-hero {
+        flex-direction: row;
+        padding-bottom: 0.35rem;
+    }
+
+    body.os-window-open .os-hero .os-logo {
+        max-width: 145px;
     }
 
     body.os-window-open .os-hero .os-tagline {
         display: none;
+    }
+
+    .os-win-bar {
+        padding: 0.55rem 0.65rem;
+        gap: 0.45rem;
+    }
+
+    .os-win-tabs {
+        order: 3;
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
+        gap: 0.35rem;
+    }
+
+    .os-subtab {
+        padding: 0.42rem 0.35rem;
+        font-size: 0.62rem;
+        text-align: center;
+    }
+
+    .os-win-close {
+        padding: 0.32rem 0.55rem;
+        font-size: 0.62rem;
+    }
+
+    .os-win-body {
+        height: auto;
+        max-height: 62vh;
+        padding: 0.65rem;
+    }
+
+    .os-mod-grid,
+    .os-row-grid {
+        grid-template-columns: 1fr;
     }
 }
