@@ -124,7 +124,13 @@
             const activeWin = document.querySelector(`.os-view[data-view="${target}"]`);
             if (activeWin) {
                 setTimeout(() => {
-                    activeWin.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    // Phones: bring the whole center stack (brand + channels + window).
+                    // Tablets: nudge the window into view without jumping.
+                    const phone = window.innerWidth <= 640;
+                    const targetEl = phone
+                        ? (document.querySelector('.os-center') || activeWin)
+                        : activeWin;
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: phone ? 'start' : 'nearest' });
                 }, 60);
             }
         }
@@ -570,7 +576,7 @@
                     'CH-00 // IDLE',
                     'TUNE A CHANNEL',
                     'Standing by at the console',
-                    'Hover or click a channel below to open it right inside the workstation, or type a command in the prompt.'
+                    'Pick a channel below to open it inside the workstation.'
                 );
                 return;
             }

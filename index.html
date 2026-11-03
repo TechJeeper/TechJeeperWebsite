@@ -23,9 +23,8 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=17">
-    <link rel="stylesheet" href="assets/css/console-os.css?v=17">
-    <link rel="stylesheet" href="assets/css/console-subpages.css?v=17">
+    <link rel="stylesheet" href="assets/css/console-os.css?v=20">
+    <link rel="stylesheet" href="assets/css/console-subpages.css?v=20">
 </head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQEF5Z0F3"></script>
 <script>
@@ -120,7 +119,7 @@
                                     </div>
                                     <div class="os-monitor-body">
                                         <p class="os-mon-title" id="os-mon-title">Standing by at the console</p>
-                                        <p class="os-mon-desc" id="os-mon-desc">Hover or click a channel below to open it right inside the workstation, or type a command in the prompt.</p>
+                                        <p class="os-mon-desc" id="os-mon-desc">Pick a channel below to open it inside the workstation.</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +137,9 @@
                                         <button type="button" class="os-subtab" data-pane-group="proj" data-pane-target="proj-hubs">Repos &amp; Hubs (4)</button>
                                     </div>
                                     <button type="button" class="os-win-close" data-view-target="home" title="Return to standby (Esc)">
-                                        <i class="fas fa-xmark"></i> ESC
+                                        <i class="fas fa-xmark" aria-hidden="true"></i>
+                                        <span class="os-close-desk">ESC</span>
+                                        <span class="os-close-mob">CLOSE</span>
                                     </button>
                                 </div>
 
@@ -316,7 +317,9 @@
                                         <button type="button" class="os-subtab" data-pane-group="supp" data-pane-target="supp-affiliates">Partner Codes (9)</button>
                                     </div>
                                     <button type="button" class="os-win-close" data-view-target="home" title="Return to standby (Esc)">
-                                        <i class="fas fa-xmark"></i> ESC
+                                        <i class="fas fa-xmark" aria-hidden="true"></i>
+                                        <span class="os-close-desk">ESC</span>
+                                        <span class="os-close-mob">CLOSE</span>
                                     </button>
                                 </div>
 
@@ -545,7 +548,11 @@
                     </main>
 
                     <footer class="os-dock">
-                        <p class="os-dock-hint">hover to tune · click or type to launch · F1–F4 / Esc hotkeys · <a href="mailto:contact@techjeeper.com">collab@inquiries</a></p>
+                        <p class="os-dock-hint">
+                            <span class="os-dock-hint-desk">hover to tune · click or type to launch · F1–F4 / Esc hotkeys · </span>
+                            <span class="os-dock-hint-mob">tap a channel to open · </span>
+                            <a href="mailto:contact@techjeeper.com">collab@inquiries</a>
+                        </p>
                         <div class="os-dock-meters" aria-hidden="true">
                             <span>CPU <em id="os-cpu">12%</em></span>
                             <span>FILAMENT OK</span>
@@ -563,6 +570,6 @@
         </div>
     </div>
 
-    <script src="assets/js/console-os.js?v=17"></script>
+    <script src="assets/js/console-os.js?v=20"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 .os-view {
     width: 100%;
-    max-width: 680px;
+    max-width: 42.5rem;
 }
 
 .os-view[hidden] {
@@ -15,7 +15,7 @@ body.os-window-open .os-hero {
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    max-width: 680px;
+    max-width: 42.5rem;
     padding-bottom: 0.25rem;
     border-bottom: 1px solid rgba(0, 191, 255, 0.2);
 }
@@ -25,7 +25,7 @@ body.os-window-open .os-hero .os-eyebrow {
 }
 
 body.os-window-open .os-hero .os-logo {
-    max-width: 175px;
+    max-width: 11rem;
     margin: 0;
     animation: none;
 }
@@ -137,6 +137,10 @@ body.os-window-open .os-hero .os-tagline {
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
+.os-close-mob {
+    display: none;
+}
+
 .os-win-close:hover,
 .os-win-close:focus-visible {
     background: rgba(255, 95, 95, 0.22);
@@ -147,7 +151,7 @@ body.os-window-open .os-hero .os-tagline {
 
 /* Tab Panes inside Window */
 .os-win-body {
-    height: 310px;
+    height: min(28rem, 52vh);
     overflow-y: auto;
     padding: 0.75rem 0.85rem;
     scrollbar-width: thin;
@@ -368,14 +372,22 @@ body.os-window-open .os-hero .os-tagline {
     letter-spacing: 0.04em;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1080px) {
+    .os-win-body {
+        height: auto;
+        max-height: 55vh;
+        padding: 0.65rem;
+    }
+}
+
+@media (max-width: 640px) {
     body.os-window-open .os-hero {
         flex-direction: row;
         padding-bottom: 0.35rem;
     }
 
     body.os-window-open .os-hero .os-logo {
-        max-width: 145px;
+        max-width: 135px;
     }
 
     body.os-window-open .os-hero .os-tagline {
@@ -391,25 +403,40 @@ body.os-window-open .os-hero .os-tagline {
         order: 3;
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(95px, 1fr));
-        gap: 0.35rem;
+        grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+        gap: 0.4rem;
     }
 
     .os-subtab {
-        padding: 0.42rem 0.35rem;
-        font-size: 0.62rem;
+        min-height: 44px;
+        padding: 0.5rem 0.35rem;
+        font-size: 0.68rem;
         text-align: center;
     }
 
     .os-win-close {
-        padding: 0.32rem 0.55rem;
-        font-size: 0.62rem;
+        min-height: 40px;
+        padding: 0.4rem 0.65rem;
+        font-size: 0.68rem;
+    }
+
+    .os-close-desk {
+        display: none;
+    }
+
+    .os-close-mob {
+        display: inline;
     }
 
     .os-win-body {
         height: auto;
-        max-height: 62vh;
-        padding: 0.65rem;
+        max-height: 58vh;
+        padding: 0.6rem;
+    }
+
+    .os-mod-card,
+    .os-item-row {
+        min-height: 44px;
     }
 
     .os-mod-grid,
