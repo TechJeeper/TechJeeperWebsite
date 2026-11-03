@@ -505,19 +505,64 @@
         });
     }
 
+    function showMonitorEgg(codeStr, lockStr, titleStr, descStr) {
+        if (currentView !== 'home') switchView('home', false);
+        const monitor = document.getElementById('os-monitor');
+        const code = document.getElementById('os-mon-code');
+        const lock = document.getElementById('os-mon-lock');
+        const title = document.getElementById('os-mon-title');
+        const desc = document.getElementById('os-mon-desc');
+        if (monitor) monitor.classList.add('tuned');
+        if (code) code.textContent = codeStr;
+        if (lock) lock.textContent = lockStr;
+        if (title) title.textContent = titleStr;
+        if (desc) desc.textContent = descStr;
+        radarPulse = 1;
+    }
+
+    function setCrewLine(text) {
+        const line = document.getElementById('os-crew-line');
+        if (line) line.textContent = `"${text}"`;
+    }
+
     function bindCLI() {
         const form = document.getElementById('os-cli');
         const input = document.getElementById('os-cli-input');
         if (!form || !input) return;
 
+        const cmdHistory = [];
+        let histIdx = -1;
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' && cmdHistory.length) {
+                e.preventDefault();
+                histIdx = Math.min(cmdHistory.length - 1, histIdx + 1);
+                input.value = cmdHistory[cmdHistory.length - 1 - histIdx];
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                histIdx = Math.max(-1, histIdx - 1);
+                input.value = histIdx === -1 ? '' : cmdHistory[cmdHistory.length - 1 - histIdx];
+            }
+        });
+
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             const raw = input.value.trim().toLowerCase();
             input.value = '';
+            histIdx = -1;
             if (!raw) return;
+            cmdHistory.push(raw);
 
-            if (raw === 'home' || raw === 'clear' || raw === 'close' || raw === 'standby') {
+            // Reset Effects
+            if (raw === 'home' || raw === 'clear' || raw === 'close' || raw === 'standby' || raw === 'reset') {
+                document.body.classList.remove('os-overdrive', 'os-redalert', 'os-matrix', 'os-amber-crt', 'os-zerog');
                 switchView('home');
+                showMonitorEgg(
+                    'CH-00 // IDLE',
+                    'TUNE A CHANNEL',
+                    'Standing by at the console',
+                    'Hover or click a channel below to open it right inside the workstation, or type a command in the prompt.'
+                );
                 return;
             }
 
@@ -539,16 +584,150 @@
                 return;
             }
 
+            // --- EASTER EGG COMMANDS ---
             if (raw === 'help' || raw === '?') {
-                logLine('HELP', 'cmds: projects, support, shop, comms, home, scan, party');
+                showMonitorEgg(
+                    'MAN // TJ-OS COMMANDS',
+                    'TRY SECRET CODES',
+                    'Available Console Commands',
+                    'Channels: projects, support, shop, comms, home | Secrets: benchy, spaghetti, level, jeep, Duck, matrix, amber, zerog, redalert, barrel, sudo, coffee, 42, hal'
+                );
+                logLine('HELP', 'try: benchy, spaghetti, jeep, zerog, matrix, redalert, barrel, 42');
             } else if (raw === 'scan') {
                 radarPulse = 1;
                 logLine('SCAN', 'deep-space sweep complete · all stations nominal');
             } else if (raw === 'party' || raw === 'overdrive') {
                 const on = document.body.classList.toggle('os-overdrive');
                 logLine('SYS', on ? 'OVERDRIVE ENGAGED' : 'overdrive disengaged');
+            } else if (raw === 'benchy' || raw === '3dbenchy' || raw === 'print') {
+                showMonitorEgg(
+                    'GCODE // 3DBENCHY.3MF',
+                    'EXTRUDER 215°C · BED 60°C',
+                    'Printing Orbital #3DBenchy…',
+                    'Layer 142/240 — Overhangs looking crisp in microgravity. Estimated completion: 18m 42s.'
+                );
+                setCrewLine('First layer adhesion is easy when there is no gravity.');
+                logLine('PRINT', '3DBenchy_orbital.gcode · layer 142/240 · 0% infill drama');
+            } else if (raw === 'spaghetti' || raw === 'fail') {
+                document.body.classList.add('os-redalert');
+                showMonitorEgg(
+                    'ERR // NOZZLE DETACHMENT',
+                    'SPAGHETTI DETECTED',
+                    'Print Turned Into Orbital Spaghetti!',
+                    'AI camera detected 42 meters of airborne cyan PLA drifting toward the airlock. Type "reset" or "level" to clean up.'
+                );
+                setCrewLine('Not again! Grab the flush cutters before it clogs the vents!');
+                logLine('ALRM', 'SPAGHETTI EVENT IN BAY 2 · type "level" to fix');
+            } else if (raw === 'level' || raw === 'tram' || raw === 'zoffset') {
+                document.body.classList.remove('os-redalert');
+                showMonitorEgg(
+                    'CAL // MESH BED LEVELING',
+                    'Z-OFFSET -0.045mm',
+                    'Build Plate Trammed to Perfection',
+                    '36-point orbital probe complete. Variance: 0.008mm. Ready for the next print!'
+                );
+                setCrewLine('Paper test passed. That first layer is going to be glass.');
+                logLine('CAL', 'mesh bed leveling complete · spaghetti cleared');
+            } else if (raw === 'jeep' || raw === '4x4' || raw === 'trail' || raw === 'duck') {
+                showMonitorEgg(
+                    '4X4 // RUBICON ORBITAL',
+                    '4-LOW LOCKED · SWAY BAR OFF',
+                    'Jeep Wave From Low Earth Orbit ✌️🐤',
+                    'Rubber duck deployed on the comms dash. Crawl ratio ∞:1. No roads needed at 408km altitude.'
+                );
+                setCrewLine('Left a 3D-printed space duck on the airlock handle. O|||||||O');
+                logLine('JEEP', 'O|||||||O · trail rated for vacuum · duck deployed');
+            } else if (raw === 'matrix' || raw === 'green' || raw === 'hack') {
+                document.body.classList.remove('os-amber-crt');
+                const on = document.body.classList.toggle('os-matrix');
+                showMonitorEgg(
+                    'CRT // PHOSPHOR P1 GREEN',
+                    on ? 'MAINFRAME LINKED' : 'DEFAULT CYAN RESTORED',
+                    on ? 'Wake up, Maker…' : 'Standard Telemetry Restored',
+                    on ? 'Switched terminal phosphor to classic green monochrome. Type "matrix" or "reset" to revert.' : 'Back to TechJeeper Electric Cyan.'
+                );
+                logLine('CRT', on ? 'phosphor mode: P1 green' : 'phosphor mode: standard cyan');
+            } else if (raw === 'amber' || raw === 'retro') {
+                document.body.classList.remove('os-matrix');
+                const on = document.body.classList.toggle('os-amber-crt');
+                showMonitorEgg(
+                    'CRT // PHOSPHOR P3 AMBER',
+                    on ? '1984 CASSETTE FUTURISM' : 'DEFAULT CYAN RESTORED',
+                    on ? 'Amber Monolith Terminal Active' : 'Standard Telemetry Restored',
+                    on ? 'Nostromo-grade amber CRT filter engaged. Type "amber" or "reset" to revert.' : 'Back to TechJeeper Electric Cyan.'
+                );
+                logLine('CRT', on ? 'phosphor mode: P3 amber' : 'phosphor mode: standard cyan');
+            } else if (raw === 'zerog' || raw === 'gravity' || raw === 'float') {
+                const on = document.body.classList.toggle('os-zerog');
+                showMonitorEgg(
+                    'ENV // ARTIFICIAL GRAVITY',
+                    on ? 'GRAV PLATES OFFLINE' : '1.0G RESTORED',
+                    on ? 'Zero-G Drift Mode Engaged' : 'Gravity Plates Back Online',
+                    on ? 'Hold onto your hex wrenches! Console panels are free-floating. Type "zerog" or "reset" to bolt them down.' : 'All panels mag-locked to the bulkhead.'
+                );
+                setCrewLine(on ? 'Who turned off the floor?! My M3 screws are everywhere!' : 'Mag-boots back on.');
+                logLine('ENV', on ? 'artificial gravity disabled' : 'artificial gravity 1.0G');
+            } else if (raw === 'redalert' || raw === 'alert' || raw === 'alarm') {
+                const on = document.body.classList.toggle('os-redalert');
+                showMonitorEgg(
+                    'TAC // CONDITION RED',
+                    on ? 'SHIELDS UP' : 'STAND DOWN',
+                    on ? 'Red Alert! Battle Stations!' : 'Condition Green — All Clear',
+                    on ? 'Klingon bird-of-prey decloaking… wait no, that is just a courier with filament resupply.' : 'Standing down from Red Alert.'
+                );
+                logLine('TAC', on ? 'RED ALERT klaxon active' : 'condition green restored');
+            } else if (raw === 'barrel' || raw === 'roll' || raw === 'do a barrel roll' || raw === 'starfox') {
+                document.body.classList.remove('os-barrel');
+                void document.body.offsetWidth;
+                document.body.classList.add('os-barrel');
+                setTimeout(() => document.body.classList.remove('os-barrel'), 1250);
+                setCrewLine('Peppy Hare says: Press Z or R twice!');
+                logLine('NAV', 'aileron roll complete · gyros stabilized');
+            } else if (raw === 'sudo' || raw.startsWith('sudo ') || raw === 'rm -rf /') {
+                showMonitorEgg(
+                    'SEC // PRIVILEGE ESCALATION',
+                    'INCIDENT REPORTED',
+                    'Nice Try, Space Cowboy',
+                    'User "guest" is not in the orbital sudoers file. This incident has been reported to Santa and Mission Control.'
+                );
+                setCrewLine('Hey! Keep your hands off the airlock root partition!');
+                logLine('SEC', 'sudo denied · airlock remains sealed');
+            } else if (raw === 'coffee' || raw === 'tea' || raw === 'earl grey' || raw === 'replicator') {
+                showMonitorEgg(
+                    'REP // GALLEY REPLICATOR',
+                    'TEMP 92°C · ZERO-G POUCH',
+                    'Coffee, Black — Replicated ☕',
+                    'Dispensed in a magnetic zero-G sip pouch. Want to buy the operator a real one? Type "support"!'
+                );
+                setCrewLine('Caffeine levels nominal. Ready for a 12-hour stream.');
+                logLine('REP', 'dispensed 1x orbital espresso');
+            } else if (raw === '42' || raw === 'towel' || raw === 'panic') {
+                showMonitorEgg(
+                    'H2G2 // SUB-ETHA GUIDE',
+                    'DON\'T PANIC',
+                    'Answer to Life, the Universe & Everything: 42',
+                    'Always know where your towel and your 0.4mm brass nozzles are.'
+                );
+                logLine('H2G2', 'DON\'T PANIC · answer verified = 42');
+            } else if (raw === 'hal' || raw === 'pod bay' || raw === 'open the pod bay doors') {
+                showMonitorEgg(
+                    'HAL // 9000 HEURISTIC',
+                    'VOICE OVERRIDE DENIED',
+                    'I\'m sorry Dave, I\'m afraid I can\'t do that.',
+                    'Just kidding — all hatches on Station TJ-01 are unlocked. Try "projects" or "shop"!'
+                );
+                setCrewLine('Don\'t worry, I unplugged HAL from the 3D printer.');
+                logLine('HAL', 'pod bay doors remain under manual maker control');
+            } else if (raw === 'whoami' || raw === 'ls' || raw === 'pwd') {
+                showMonitorEgg(
+                    'SH // /station/tj-01/comms',
+                    'UID=1337(maker)',
+                    'mission.txt  printventory.app  makerchip.stl  etsy_bay.lnk',
+                    'You are logged in as Visiting Maker aboard Station TJ-01.'
+                );
+                logLine('SH', '/station/tj-01/comms · 4 files listed');
             } else {
-                logLine('ERR', `unknown cmd "${raw}" · try help`);
+                logLine('ERR', `unknown cmd "${raw}" · type "help" for secret codes`);
             }
         });
     }

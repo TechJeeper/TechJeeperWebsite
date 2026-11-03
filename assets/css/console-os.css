@@ -695,11 +695,68 @@ body.os-booted .os-desktop {
     line-height: 1.3;
 }
 
-/* Party / overdrive mode */
+/* Party / overdrive & Easter egg modes */
 body.os-overdrive .console-screen {
     box-shadow:
         inset 0 0 90px rgba(28, 228, 255, 0.2),
         0 0 60px rgba(28, 228, 255, 0.25);
+}
+
+body.os-redalert .console-screen {
+    border-color: #ff4757;
+    animation: redAlertPulse 0.9s ease-in-out infinite alternate;
+}
+
+body.os-redalert .os-monitor::before {
+    background: #ff4757;
+    box-shadow: 0 0 14px #ff4757;
+}
+
+body.os-matrix {
+    --os-cyan: #3dffa0;
+    --os-cyan-hot: #7bffb8;
+    --os-line: rgba(61, 255, 160, 0.35);
+}
+
+body.os-amber-crt {
+    --os-cyan: #ffb347;
+    --os-cyan-hot: #ffd27d;
+    --os-green: #ffb347;
+    --os-line: rgba(255, 179, 71, 0.35);
+}
+
+body.os-zerog .os-panel,
+body.os-zerog .os-monitor,
+body.os-zerog .os-app {
+    animation: zeroGFloat 4.2s ease-in-out infinite alternate;
+}
+
+body.os-zerog .os-col-right .os-panel {
+    animation-delay: 0.7s;
+}
+
+body.os-barrel .console-bezel {
+    animation: barrelRoll 1.15s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+}
+
+@keyframes redAlertPulse {
+    from {
+        box-shadow: inset 0 0 50px rgba(255, 71, 87, 0.15), 0 0 25px rgba(255, 71, 87, 0.15);
+    }
+    to {
+        box-shadow: inset 0 0 95px rgba(255, 71, 87, 0.38), 0 0 55px rgba(255, 71, 87, 0.35);
+    }
+}
+
+@keyframes zeroGFloat {
+    0% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-6px) rotate(-0.6deg); }
+    100% { transform: translateY(4px) rotate(0.6deg); }
+}
+
+@keyframes barrelRoll {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .os-dock {
