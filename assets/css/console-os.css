@@ -473,23 +473,47 @@ body.os-booted .os-desktop {
     animation: blink 1.1s steps(1) infinite;
 }
 
-.os-radar {
+.os-live-badge {
+    color: var(--os-amber);
+    font-weight: 600;
+}
+
+.os-solar {
     display: block;
     width: 100%;
-    max-width: 165px;
-    aspect-ratio: 1;
-    margin: 0 auto;
-    border-radius: 50%;
+    height: 138px;
+    background: rgba(2, 8, 16, 0.78);
+    border: 1px solid rgba(0, 191, 255, 0.22);
     cursor: pointer;
 }
 
-.os-radar-foot {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.35rem;
+.os-solar-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+    margin-top: 0.45rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(0, 191, 255, 0.18);
     font-family: var(--os-mono);
-    font-size: 0.56rem;
+}
+
+.os-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.os-metric small {
+    font-size: 0.52rem;
     color: var(--os-muted);
+    letter-spacing: 0.06em;
+}
+
+.os-metric strong {
+    font-size: 0.68rem;
+    color: var(--os-text);
+    font-weight: 600;
+    white-space: nowrap;
 }
 
 .os-mission-wrap .os-panel-head {

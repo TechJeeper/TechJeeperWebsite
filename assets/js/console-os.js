@@ -74,19 +74,13 @@
         if (clock) clock.textContent = new Date().toISOString().slice(11, 19) + ' Z';
 
         const orbit = document.getElementById('os-orbit');
-        if (orbit) {
+        if (orbit && !window.TJ_LIVE_ALT) {
             const wobble = Math.sin(Date.now() / 4000) * 1.8;
             orbit.textContent = `ALT ${(408 + wobble).toFixed(1)}km`;
         }
 
         const cpu = document.getElementById('os-cpu');
         if (cpu) cpu.textContent = `${10 + Math.floor(Math.random() * 9)}%`;
-
-        const brg = document.getElementById('os-bearing');
-        if (brg) {
-            const deg = Math.floor((Date.now() / 120) % 360);
-            brg.textContent = `BRG ${String(deg).padStart(3, '0')}°`;
-        }
     }
 
     function switchView(viewName, updateHash = true) {
@@ -192,75 +186,226 @@
         window.addEventListener('resize', resize);
     }
 
-    function initRadar() {
-        const canvas = document.getElementById('os-radar');
+    function initSolarTelemetry() {
+        const canvas = document.getElementById('os-solar');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
-        const cx = w / 2;
-        const cy = h / 2;
-        const R = w * 0.45;
-        let angle = 0;
+
+        const swEl = document.getElementById('os-sw-speed');
+        const kpEl = document.getElementById('os-kp-val');
+        const magEl = document.getElementById('os-mag-val');
+        const flareEl = document.getElementById('os-flare-class');
+        const orbitEl = document.getElementById('os-orbit');
+
+        const state = {
+            windSpeed: 360,
+            bt: 5,
+            bz: -1,
+            kp: 2.3,
+            flareClass: 'B1.2',
+            xraySeries: [],
+            mode: 'flux', // 'flux' (GOES X-ray + solar wind stream) or 'sun' (heliosphere view)
+            particles: Array.from({ length: 34 }, () => ({
+                x: Math.random() * w,
+                y: Math.random() * h,
+                s: Math.random() * 1.2 + 0.5
+            }))
+        };
 
         canvas.addEventListener('click', () => {
-            radarPulse = 1;
-            logLine('SCAN', `sector ping · ${blips.length} targets locked`);
+            state.mode = state.mode === 'flux' ? 'sun' : 'flux';
+            logLine(
+                'NOAA',
+                state.mode === 'flux'
+                    ? `GOES X-ray flux · ${state.flareClass} · wind ${state.windSpeed} km/s`
+                    : `DSCOVR solar wind · ${state.windSpeed} km/s · Kp ${state.kp}`
+            );
         });
 
-        function draw() {
-            ctx.clearRect(0, 0, w, h);
+        function classifyFlux(flux) {
+            if (!flux || flux <= 0) return 'A1.0';
+            const exp = Math.floor(Math.log10(flux));
+            const mant = (flux / Math.pow(10, exp)).toFixed(1);
+            if (exp < -7) return `A${mant}`;
+            if (exp === -7) return `B${mant}`;
+            if (exp === -6) return `C${mant}`;
+            if (exp === -5) return `M${mant}`;
+            return `X${mant}`;
+        }
 
-            ctx.strokeStyle = 'rgba(0, 191, 255, 0.25)';
-            ctx.lineWidth = 1;
-            [0.33, 0.66, 1].forEach((f) => {
-                ctx.beginPath();
-                ctx.arc(cx, cy, R * f, 0, Math.PI * 2);
-                ctx.stroke();
-            });
+        async function fetchSpaceWeather() {
+            try {
+                const [windRes, magRes, kpRes, xrayRes] = await Promise.allSettled([
+                    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-speed.json').then((r) => r.json()),
+                    fetch('https://services.swpc.noaa.gov/products/summary/solar-wind-mag-field.json').then((r) => r.json()),
+                    fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json').then((r) => r.json()),
+                    fetch('https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json').then((r) => r.json())
+                ]);
 
-            ctx.beginPath();
-            ctx.moveTo(cx - R, cy);
-            ctx.lineTo(cx + R, cy);
-            ctx.moveTo(cx, cy - R);
-            ctx.lineTo(cx, cy + R);
-            ctx.stroke();
+                if (windRes.status === 'fulfilled' && windRes.value && windRes.value[0]) {
+                    const sp = Number(windRes.value[0].proton_speed);
+                    if (!Number.isNaN(sp) && sp > 0) {
+                        state.windSpeed = sp;
+                        if (swEl) swEl.textContent = `${sp} km/s`;
+                    }
+                }
 
-            if (!reduced) angle = (angle + 0.025) % (Math.PI * 2);
-            for (let i = 0; i < 24; i++) {
-                const a0 = angle - i * 0.03;
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, R, a0 - 0.035, a0);
-                ctx.closePath();
-                ctx.fillStyle = `rgba(0, 191, 255, ${(1 - i / 24) * 0.22})`;
-                ctx.fill();
+                if (magRes.status === 'fulfilled' && magRes.value && magRes.value[0]) {
+                    state.bt = magRes.value[0].bt;
+                    state.bz = magRes.value[0].bz_gsm;
+                    if (magEl) magEl.textContent = `${state.bz}/${state.bt} nT`;
+                }
+
+                if (kpRes.status === 'fulfilled' && Array.isArray(kpRes.value)) {
+                    const observed = kpRes.value.filter((row) => row && row.observed === 'observed');
+                    const last = observed[observed.length - 1] || kpRes.value[kpRes.value.length - 1];
+                    if (last && last.kp != null) {
+                        state.kp = Number(last.kp).toFixed(1);
+                        if (kpEl) kpEl.textContent = `Kp ${state.kp}`;
+                    }
+                }
+
+                if (xrayRes.status === 'fulfilled' && Array.isArray(xrayRes.value)) {
+                    const longWave = xrayRes.value.filter((d) => d.energy === '0.1-0.8nm' && d.flux > 0);
+                    const samples = (longWave.length ? longWave : xrayRes.value).slice(-90);
+                    state.xraySeries = samples.map((d) => Number(d.flux) || 1e-8);
+                    const latestFlux = state.xraySeries[state.xraySeries.length - 1];
+                    if (latestFlux) {
+                        state.flareClass = classifyFlux(latestFlux);
+                        if (flareEl) flareEl.textContent = `XRAY ${state.flareClass}`;
+                    }
+                }
+
+                logLine('NOAA', `live solar wind ${state.windSpeed} km/s · ${state.flareClass} · Kp ${state.kp}`);
+            } catch (_) {
+                if (flareEl) flareEl.textContent = 'LIVE // SIM';
             }
 
-            blips.forEach((b) => {
-                const bx = cx + Math.cos(b.a) * R * b.r;
-                const by = cy + Math.sin(b.a) * R * b.r;
-                const diff = ((angle - b.a) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-                const glow = Math.max(0.25, 1 - diff / 3.5);
+            // Also fetch live ISS altitude for the top bar
+            try {
+                const iss = await fetch('https://api.wheretheiss.at/v1/satellites/25544').then((r) => r.json());
+                if (iss && iss.altitude && orbitEl) {
+                    window.TJ_LIVE_ALT = Number(iss.altitude);
+                    orbitEl.textContent = `ISS ${window.TJ_LIVE_ALT.toFixed(1)}km`;
+                }
+            } catch (_) {
+                /* keep default altitude */
+            }
+        }
+
+        let t = 0;
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+            t += 0.03;
+
+            // Subtle grid
+            ctx.strokeStyle = 'rgba(0, 191, 255, 0.1)';
+            ctx.lineWidth = 1;
+            for (let gx = 40; gx < w; gx += 40) {
                 ctx.beginPath();
-                ctx.fillStyle = `rgba(61, 255, 160, ${glow})`;
-                ctx.arc(bx, by, 3, 0, Math.PI * 2);
-                ctx.fill();
+                ctx.moveTo(gx, 0);
+                ctx.lineTo(gx, h);
+                ctx.stroke();
+            }
+            for (let gy = 35; gy < h; gy += 35) {
+                ctx.beginPath();
+                ctx.moveTo(0, gy);
+                ctx.lineTo(w, gy);
+                ctx.stroke();
+            }
+
+            // Solar wind particles streaming from left (Sun) to right (Magnetosphere)
+            const speedFactor = Math.max(0.4, Math.min(2.6, (state.windSpeed - 250) / 220));
+            state.particles.forEach((p) => {
+                if (!reduced) {
+                    p.x += p.s * speedFactor;
+                    if (p.x > w) {
+                        p.x = 0;
+                        p.y = Math.random() * h;
+                    }
+                }
+                ctx.fillStyle = 'rgba(255, 179, 71, 0.35)';
+                ctx.fillRect(p.x, p.y, 2.2, 1.2);
             });
 
-            if (radarPulse > 0.02) {
+            // Glowing Sun corona on left edge
+            const sunGrad = ctx.createRadialGradient(0, h / 2, 2, 0, h / 2, 54);
+            sunGrad.addColorStop(0, 'rgba(255, 195, 85, 0.95)');
+            sunGrad.addColorStop(0.35, 'rgba(255, 130, 40, 0.42)');
+            sunGrad.addColorStop(1, 'transparent');
+            ctx.fillStyle = sunGrad;
+            ctx.beginPath();
+            ctx.arc(0, h / 2, 54, -Math.PI / 2, Math.PI / 2);
+            ctx.fill();
+
+            if (state.mode === 'flux') {
+                // Plot GOES 6-hour X-ray flux curve (log scale -9 to -4)
+                const series = state.xraySeries.length
+                    ? state.xraySeries
+                    : Array.from({ length: 60 }, (_, i) => 1e-7 * (1 + 0.4 * Math.sin(i * 0.2 + t)));
+
                 ctx.beginPath();
-                ctx.strokeStyle = `rgba(28, 228, 255, ${radarPulse})`;
-                ctx.lineWidth = 2;
-                ctx.arc(cx, cy, R * (1 - radarPulse * 0.8), 0, Math.PI * 2);
+                series.forEach((val, idx) => {
+                    const x = 18 + (idx / Math.max(1, series.length - 1)) * (w - 26);
+                    const logv = Math.max(-9, Math.min(-4, Math.log10(Math.max(1e-9, val))));
+                    const norm = (logv - -9) / 5; // 0..1
+                    const y = h - 18 - norm * (h - 36);
+                    if (idx === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                ctx.strokeStyle = '#1ce4ff';
+                ctx.lineWidth = 1.8;
                 ctx.stroke();
-                radarPulse *= 0.92;
+
+                // Fill under flux curve
+                ctx.lineTo(w - 8, h - 14);
+                ctx.lineTo(18, h - 14);
+                ctx.closePath();
+                const fillG = ctx.createLinearGradient(0, 15, 0, h - 14);
+                fillG.addColorStop(0, 'rgba(28, 228, 255, 0.28)');
+                fillG.addColorStop(1, 'rgba(28, 228, 255, 0.02)');
+                ctx.fillStyle = fillG;
+                ctx.fill();
+
+                // Caption
+                ctx.fillStyle = 'rgba(232, 244, 255, 0.72)';
+                ctx.font = '10px "IBM Plex Mono", monospace';
+                ctx.fillText('GOES-18 X-RAY FLUX (6H)', 10, 14);
+            } else {
+                // Magnetosphere bow shock visualization
+                const ex = w * 0.74;
+                const ey = h / 2;
+                ctx.strokeStyle = 'rgba(0, 191, 255, 0.55)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(ex, ey, 28 + Math.sin(t * 2) * 2, Math.PI * 0.55, Math.PI * 1.45);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = '#00bfff';
+                ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = 'rgba(232, 244, 255, 0.72)';
+                ctx.font = '10px "IBM Plex Mono", monospace';
+                ctx.fillText('DSCOVR SOLAR WIND -> EARTH', 10, 14);
+            }
+
+            if (radarPulse > 0.02) {
+                ctx.strokeStyle = `rgba(61, 255, 160, ${radarPulse})`;
+                ctx.lineWidth = 2;
+                ctx.strokeRect(1, 1, w - 2, h - 2);
+                radarPulse *= 0.9;
             }
 
             requestAnimationFrame(draw);
         }
 
         draw();
+        fetchSpaceWeather();
+        setInterval(fetchSpaceWeather, 60000);
     }
 
     function initTilt() {
@@ -410,7 +555,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         initStarfield();
-        initRadar();
+        initSolarTelemetry();
         initTilt();
         bindChannels();
         bindCrew();

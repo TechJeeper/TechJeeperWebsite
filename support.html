@@ -23,9 +23,9 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/style.css?v=14">
-    <link rel="stylesheet" href="assets/css/console-os.css?v=14">
-    <link rel="stylesheet" href="assets/css/console-subpages.css?v=14">
+    <link rel="stylesheet" href="assets/css/style.css?v=15">
+    <link rel="stylesheet" href="assets/css/console-os.css?v=15">
+    <link rel="stylesheet" href="assets/css/console-subpages.css?v=15">
 </head>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQEF5Z0F3"></script>
 <script>
@@ -66,17 +66,27 @@
                     </header>
 
                     <main class="os-workspace">
-                        <!-- Left: live radar + mission terminal -->
+                        <!-- Left: live NOAA solar telemetry + mission terminal -->
                         <aside class="os-col os-col-left" aria-label="Orbital telemetry">
-                            <div class="os-panel os-radar-wrap">
+                            <div class="os-panel os-solar-wrap" id="os-solar-panel" title="Click to toggle Solar Wind / X-Ray Flux view">
                                 <div class="os-panel-head">
-                                    <span>SECTOR SCAN</span>
-                                    <span id="os-bearing">BRG 042Â°</span>
+                                    <span>NOAA // SOLAR</span>
+                                    <span id="os-flare-class" class="os-live-badge">SYNCINGâ€¦</span>
                                 </div>
-                                <canvas id="os-radar" class="os-radar" width="180" height="180"></canvas>
-                                <div class="os-radar-foot">
-                                    <span>5 CONTACTS</span>
-                                    <span id="os-range">RNG 12.4km</span>
+                                <canvas id="os-solar" class="os-solar" width="240" height="145"></canvas>
+                                <div class="os-solar-metrics">
+                                    <div class="os-metric">
+                                        <small>SOLAR WIND</small>
+                                        <strong id="os-sw-speed">--- km/s</strong>
+                                    </div>
+                                    <div class="os-metric">
+                                        <small>KP INDEX</small>
+                                        <strong id="os-kp-val">Kp --</strong>
+                                    </div>
+                                    <div class="os-metric">
+                                        <small>IMF Bz / Bt</small>
+                                        <strong id="os-mag-val">-- nT</strong>
+                                    </div>
                                 </div>
                             </div>
                             <div class="os-panel os-mission-wrap">
@@ -553,7 +563,7 @@
         </div>
     </div>
 
-    <script>window.TJ_INITIAL_VIEW="support";</script><script src="assets/js/console-os.js?v=14"></script>
+    <script>window.TJ_INITIAL_VIEW="support";</script><script src="assets/js/console-os.js?v=15"></script>
 </body>
 </html>
 
