@@ -1,267 +1,559 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" class="console-os-page">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="zero-threat-verification" content="zeroThreat=MTE3OTI=TVRFM09UST0=TVRFM09UST">
     <title>TechJeeper Designs - Portfolio of Maker & 3D Printing Projects</title>
-    <meta name="description" content="Explore the portfolio of TechJeeper Designs — Printventory, MakersOnStream, MakerChip, HypeWheel, LayerLens, and more maker tools, designs, and open-source projects.">
-    <meta name="keywords" content="TechJeeper, portfolio, maker projects, 3D printing, electronics, software, DIY, technology, MakerChip, Printventory, MakersOnStream, 3DPrintingTools, HypeWheel, LayerLens, RetroTrivia, Pebble">
+    <meta name="description" content="TechJeeper Designs is your hub for maker projects, 3D printing, and tech adventures. Explore our portfolio and shop unique 3D printed & handmade creations.">
+    <meta name="keywords" content="TechJeeper, 3D printing, maker, tech, DIY, projects, portfolio, shop, handmade, creations, technology, adventures, support">
     <meta name="author" content="TechJeeper Designs">
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://techjeeper.com/portfolio.html">
-    <meta property="og:title" content="TechJeeper Designs - Portfolio of Maker & 3D Printing Projects">
-    <meta property="og:description" content="Explore the portfolio of TechJeeper Designs — Printventory, MakersOnStream, MakerChip, HypeWheel, LayerLens, and more maker tools, designs, and open-source projects.">
+    <meta property="og:url" content="https://techjeeper.com/">
+    <meta property="og:title" content="TechJeeper Designs - Maker Projects, 3D Printing & Tech Adventures">
+    <meta property="og:description" content="TechJeeper Designs is your hub for maker projects, 3D printing, and tech adventures. Explore our portfolio and shop unique 3D printed & handmade creations.">
     <meta property="og:image" content="https://techjeeper.com/assets/img/header.png">
-    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://techjeeper.com/portfolio.html">
-    <meta property="twitter:title" content="TechJeeper Designs - Portfolio of Maker & 3D Printing Projects">
-    <meta property="twitter:description" content="Explore the portfolio of TechJeeper Designs — Printventory, MakersOnStream, MakerChip, HypeWheel, LayerLens, and more maker tools, designs, and open-source projects.">
+    <meta property="twitter:url" content="https://techjeeper.com/">
+    <meta property="twitter:title" content="TechJeeper Designs - Maker Projects, 3D Printing & Tech Adventures">
+    <meta property="twitter:description" content="TechJeeper Designs is your hub for maker projects, 3D printing, and tech adventures. Explore our portfolio and shop unique 3D printed & handmade creations.">
     <meta property="twitter:image" content="https://techjeeper.com/assets/img/header.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/animations.css">
-    <link rel="stylesheet" href="assets/css/portfolio.css">
-    <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=14">
+    <link rel="stylesheet" href="assets/css/console-os.css?v=14">
+    <link rel="stylesheet" href="assets/css/console-subpages.css?v=14">
 </head>
-<body>
-    <main class="main-container">
-        <section id="portfolio" class="section active">
-            <div class="home-content portfolio-page">
-                <a href="index.html"><img src="assets/img/header.png" alt="TechJeeper Designs" class="header-logo"></a>
-                <p class="tagline">
-                    <span>P</span><span>o</span><span>r</span><span>t</span><span>f</span><span>o</span><span>l</span><span>i</span><span>o</span>
-                </p>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CYQEF5Z0F3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-CYQEF5Z0F3');
+</script>
+<body class="console-os-page">
+    <div class="console-stage" id="console-stage">
+        <div class="console-bezel" id="console-bezel">
+            <div class="console-screws" aria-hidden="true">
+                <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="console-screen" id="console-screen">
+                <canvas class="os-starfield" id="os-starfield" aria-hidden="true"></canvas>
+                <div class="os-scanlines" aria-hidden="true"></div>
+                <div class="os-vignette" aria-hidden="true"></div>
 
-                <div class="portfolio-nav">
-                    <a href="index.html" class="social-link">
-                        <i class="fas fa-home"></i>
-                        <span>Home</span>
-                    </a>
+                <div class="os-boot" id="os-boot" aria-live="polite">
+                    <p class="boot-line">TJ-COMMS // initializing uplinkâ€¦</p>
+                    <p class="boot-line">orbit lock: <span>acquired</span></p>
+                    <p class="boot-line">operator: <span>guest</span></p>
+                    <p class="boot-line boot-ready">entering workstationâ€¦</p>
                 </div>
 
-                <div class="page-intro">
-                    <p>Maker software, community platforms, printable designs, and experiments — built for 3D printers, streams, and tinkerers.</p>
-                </div>
+                <div class="os-desktop" id="os-desktop">
+                    <header class="os-statusbar">
+                        <div class="os-status-left">
+                            <span class="os-sig" title="Signal"><i class="fas fa-wifi"></i> LINK 98%</span>
+                            <span class="os-chan" id="os-chan-readout">CH-00 STANDBY</span>
+                        </div>
+                        <div class="os-status-center">TJ-OS <em>v2.4</em> Â· ORBITAL WORKSTATION</div>
+                        <div class="os-status-right">
+                            <span id="os-clock">00:00:00</span>
+                            <span class="os-orbit" id="os-orbit">ALT 408km</span>
+                        </div>
+                    </header>
 
-                <!-- Featured / Spotlight -->
-                <div class="portfolio-section">
-                    <div class="section-label">
-                        <span class="section-label-mark" aria-hidden="true"></span>
-                        <h2>Spotlight</h2>
-                    </div>
-                    <p class="section-lead">The products and platforms that define TechJeeper Designs.</p>
-
-                    <div class="featured-grid">
-                        <a href="https://printventory.com/" target="_blank" rel="noopener noreferrer" class="featured-card featured-card--printventory">
-                            <div class="featured-card-top">
-                                <div class="featured-card-icon">
-                                    <img src="assets/img/printventory.png" alt="">
+                    <main class="os-workspace">
+                        <!-- Left: live radar + mission terminal -->
+                        <aside class="os-col os-col-left" aria-label="Orbital telemetry">
+                            <div class="os-panel os-radar-wrap">
+                                <div class="os-panel-head">
+                                    <span>SECTOR SCAN</span>
+                                    <span id="os-bearing">BRG 042Â°</span>
                                 </div>
-                                <span class="featured-tag">Desktop App</span>
-                            </div>
-                            <h3>Printventory</h3>
-                            <p>Organize, tag, and track your entire 3D model library — so you can actually find what you want to print.</p>
-                            <span class="featured-cta">Visit site <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                        </a>
-
-                        <a href="https://makersonstream.app/" target="_blank" rel="noopener noreferrer" class="featured-card featured-card--mos">
-                            <div class="featured-card-top">
-                                <div class="featured-card-icon">
-                                    <img src="assets/img/makersonstream.svg" alt="">
+                                <canvas id="os-radar" class="os-radar" width="180" height="180"></canvas>
+                                <div class="os-radar-foot">
+                                    <span>5 CONTACTS</span>
+                                    <span id="os-range">RNG 12.4km</span>
                                 </div>
-                                <span class="featured-tag">Live Discovery</span>
                             </div>
-                            <h3>MakersOnStream</h3>
-                            <p>Find makers live-streaming their craft — who's on air now and what's coming up next.</p>
-                            <span class="featured-cta">Visit site <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                        </a>
-
-                        <a href="https://3dprintingtools.org/" target="_blank" rel="noopener noreferrer" class="featured-card featured-card--tools">
-                            <div class="featured-card-top">
-                                <div class="featured-card-icon">
-                                    <img src="assets/img/3dprintingtools.svg" alt="">
+                            <div class="os-panel os-mission-wrap">
+                                <div class="os-panel-head">
+                                    <span>MISSION.TXT</span>
+                                    <span class="os-term-status">RO // CAT</span>
                                 </div>
-                                <span class="featured-tag">Directory</span>
-                            </div>
-                            <h3>3DPrintingTools.org</h3>
-                            <p>Community catalog of 3D printing software — slicers, utilities, and everything in between.</p>
-                            <span class="featured-cta">Visit site <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                        </a>
-
-                        <a href="https://makerchip.app/" target="_blank" rel="noopener noreferrer" class="featured-card featured-card--chip">
-                            <div class="featured-card-top">
-                                <div class="featured-card-icon">
-                                    <img src="assets/img/makerchip.png" alt="">
+                                <div class="os-mission-term" id="os-mission-term">
+                                    <p class="os-term-cmd"><span class="prompt">$</span> cat /station/mission.txt</p>
+                                    <p class="os-term-body">At TechJeeper Designs, I'm passionate about the intersection of technology and creativity â€” where 3D printing brings digital ideas to life, and tech adventures lead to innovative solutions, from electronics to handmade creations.</p>
                                 </div>
-                                <span class="featured-tag">Collectibles</span>
                             </div>
-                            <h3>MakerChip.app</h3>
-                            <p>Catalog and community hub for collectible 3D-printed MakerChips.</p>
-                            <span class="featured-cta">Visit site <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                        </a>
+                        </aside>
 
-                        <a href="https://www.hypewheel.app/" target="_blank" rel="noopener noreferrer" class="featured-card featured-card--hype">
-                            <div class="featured-card-top">
-                                <div class="featured-card-icon featured-card-icon--fa">
-                                    <i class="fas fa-dharmachakra"></i>
+                        <!-- Center: brand + dynamic console viewport + channels + CLI -->
+                        <section class="os-center" aria-label="Console main">
+                            <div class="os-hero" id="os-hero">
+                                <p class="os-eyebrow">COMMS CONSOLE Â· STATION TJ-01</p>
+                                <a class="os-brand" href="#home" data-view-target="home">
+                                    <img src="assets/img/header.png" alt="TechJeeper Designs" class="os-logo">
+                                </a>
+                                <h1 class="os-tagline">Maker Projects &amp; <span>Tech Adventures</span></h1>
+                            </div>
+
+                            <!-- VIEWPORT 0: STANDBY / MONITOR -->
+                            <div class="os-view is-active" id="os-view-home" data-view="home">
+                                <div class="os-monitor" id="os-monitor" data-tone="standby">
+                                    <div class="os-monitor-bar">
+                                        <span class="os-monitor-code" id="os-mon-code">CH-00 // IDLE</span>
+                                        <span class="os-monitor-lock" id="os-mon-lock">TUNE A CHANNEL</span>
+                                    </div>
+                                    <div class="os-monitor-body">
+                                        <p class="os-mon-title" id="os-mon-title">Standing by at the console</p>
+                                        <p class="os-mon-desc" id="os-mon-desc">Hover or click a channel below to open it right inside the workstation, or type a command in the prompt.</p>
+                                    </div>
                                 </div>
-                                <span class="featured-tag">Streaming</span>
                             </div>
-                            <h3>HypeWheel</h3>
-                            <p>Interactive wheel for giveaways, polls, and those unforgettable stream moments.</p>
-                            <span class="featured-cta">Visit site <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                        </a>
-                    </div>
-                </div>
 
-                <!-- More tools & apps -->
-                <div class="portfolio-section">
-                    <div class="section-label">
-                        <span class="section-label-mark" aria-hidden="true"></span>
-                        <h2>More Tools &amp; Apps</h2>
-                    </div>
-                    <p class="section-lead">Smaller builds, experiments, and side projects that still pull their weight.</p>
+                            <!-- VIEWPORT 1: PROJECTS / LAB ARCHIVE (TACTICAL TABBED CONSOLE MODULE) -->
+                            <div class="os-view os-window" id="os-view-projects" data-view="projects" hidden>
+                                <div class="os-win-bar">
+                                    <div class="os-win-title">
+                                        <i class="fas fa-layer-group"></i>
+                                        <span>CH-02 // LAB ARCHIVE</span>
+                                    </div>
+                                    <div class="os-win-tabs" role="tablist" aria-label="Project categories">
+                                        <button type="button" class="os-subtab is-active" data-pane-group="proj" data-pane-target="proj-spotlight">Spotlight (5)</button>
+                                        <button type="button" class="os-subtab" data-pane-group="proj" data-pane-target="proj-tools">Tools &amp; Apps (7)</button>
+                                        <button type="button" class="os-subtab" data-pane-group="proj" data-pane-target="proj-hubs">Repos &amp; Hubs (4)</button>
+                                    </div>
+                                    <button type="button" class="os-win-close" data-view-target="home" title="Return to standby (Esc)">
+                                        <i class="fas fa-xmark"></i> ESC
+                                    </button>
+                                </div>
 
-                    <div class="tools-grid">
-                        <a href="https://layerlens.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-layer-group"></i></div>
-                            <div class="tool-card-body">
-                                <h3>LayerLens</h3>
-                                <p>Perfect your 3D model photos for every listing.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                <div class="os-win-body">
+                                    <!-- Pane 1: Spotlight -->
+                                    <div class="os-pane" id="proj-spotlight" data-pane="proj">
+                                        <div class="os-mod-grid">
+                                            <a href="https://printventory.com/" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/printventory.png" alt="" class="os-mod-icon">
+                                                        <h3>Printventory</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Desktop App</span>
+                                                </div>
+                                                <p class="os-mod-desc">Organize, tag, and track your entire 3D model library so you can find what to print.</p>
+                                                <div class="os-mod-foot"><span>printventory.com</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                        <a href="http://retrotrivia.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-gamepad"></i></div>
-                            <div class="tool-card-body">
-                                <h3>RetroTrivia</h3>
-                                <p>Nostalgic trivia game for stream and party vibes.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                            <a href="https://makersonstream.app/" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/makersonstream.svg" alt="" class="os-mod-icon">
+                                                        <h3>MakersOnStream</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Live Discovery</span>
+                                                </div>
+                                                <p class="os-mod-desc">Find makers live-streaming their craft â€” who's on air now and coming up next.</p>
+                                                <div class="os-mod-foot"><span>makersonstream.app</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                        <a href="https://3mfsanitizer.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-broom"></i></div>
-                            <div class="tool-card-body">
-                                <h3>3MFSanitizer</h3>
-                                <p>Open Bambu Studio and MakerWorld files in Cura, PrusaSlicer, and Anycubic with settings intact.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                            <a href="https://3dprintingtools.org/" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/3dprintingtools.svg" alt="" class="os-mod-icon">
+                                                        <h3>3DPrintingTools</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Directory</span>
+                                                </div>
+                                                <p class="os-mod-desc">Community catalog of 3D printing software â€” slicers, utilities, and more.</p>
+                                                <div class="os-mod-foot"><span>3dprintingtools.org</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                        <a href="https://diff3mf.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-not-equal"></i></div>
-                            <div class="tool-card-body">
-                                <h3>DIFF3MF</h3>
-                                <p>Compare 3MF files side by side to spot model differences.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                            <a href="https://makerchip.app/" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/makerchip.png" alt="" class="os-mod-icon">
+                                                        <h3>MakerChip.app</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Collectibles</span>
+                                                </div>
+                                                <p class="os-mod-desc">Catalog and community hub for collectible 3D-printed MakerChips.</p>
+                                                <div class="os-mod-foot"><span>makerchip.app</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                        <a href="https://techjeeper.github.io/CircleQR/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-qrcode"></i></div>
-                            <div class="tool-card-body">
-                                <h3>CircleQR</h3>
-                                <p>Circular QR codes for MakerChips — SVG &amp; STL export.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                            <a href="https://www.hypewheel.app/" target="_blank" rel="noopener noreferrer" class="os-mod-card os-mod-card--wide">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fas fa-dharmachakra"></i></span>
+                                                        <h3>HypeWheel</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Streaming</span>
+                                                </div>
+                                                <p class="os-mod-desc">Interactive wheel for giveaways, polls, and those unforgettable stream moments.</p>
+                                                <div class="os-mod-foot"><span>hypewheel.app</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+                                        </div>
+                                    </div>
 
-                        <a href="http://minimarblemazemaker.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-route"></i></div>
-                            <div class="tool-card-body">
-                                <h3>Mini Marble Maze Maker</h3>
-                                <p>Design and generate custom printable marble mazes.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
+                                    <!-- Pane 2: More Tools & Apps -->
+                                    <div class="os-pane" id="proj-tools" data-pane="proj" hidden>
+                                        <div class="os-row-grid">
+                                            <a href="https://layerlens.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-layer-group"></i></span>
+                                                <div class="os-item-txt"><strong>LayerLens</strong><span>Perfect your 3D model photos for every listing.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="http://retrotrivia.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-gamepad"></i></span>
+                                                <div class="os-item-txt"><strong>RetroTrivia</strong><span>Nostalgic trivia game for stream and party vibes.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="https://3mfsanitizer.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-broom"></i></span>
+                                                <div class="os-item-txt"><strong>3MFSanitizer</strong><span>Open Bambu &amp; MakerWorld 3MFs in Cura, PrusaSlicer &amp; Anycubic.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="https://diff3mf.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-not-equal"></i></span>
+                                                <div class="os-item-txt"><strong>DIFF3MF</strong><span>Compare 3MF files side by side to spot model differences.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="https://techjeeper.github.io/CircleQR/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-qrcode"></i></span>
+                                                <div class="os-item-txt"><strong>CircleQR</strong><span>Circular QR codes for MakerChips â€” SVG &amp; STL export.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="http://minimarblemazemaker.techjeeper.com/" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-route"></i></span>
+                                                <div class="os-item-txt"><strong>Mini Marble Maze Maker</strong><span>Design and generate custom printable marble mazes.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                            <a href="https://amzn.to/49lVPZP" target="_blank" rel="noopener noreferrer" class="os-item-row">
+                                                <span class="os-item-ico"><i class="fas fa-book"></i></span>
+                                                <div class="os-item-txt"><strong>Print. Log. Repeat.</strong><span>A maker's journal for logging prints and building habits.</span></div>
+                                                <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                            </a>
+                                        </div>
+                                    </div>
 
-                        <a href="https://amzn.to/49lVPZP" target="_blank" rel="noopener noreferrer" class="tool-card">
-                            <div class="tool-card-icon"><i class="fas fa-book"></i></div>
-                            <div class="tool-card-body">
-                                <h3>Print. Log. Repeat.</h3>
-                                <p>A maker's journal for logging prints and building habits.</p>
-                            </div>
-                            <i class="fas fa-arrow-right tool-card-arrow" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
+                                    <!-- Pane 3: Repos & Hubs -->
+                                    <div class="os-pane" id="proj-hubs" data-pane="proj" hidden>
+                                        <div class="os-mod-grid">
+                                            <a href="https://github.com/TechJeeper" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fab fa-github"></i></span>
+                                                        <h3>GitHub</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Open Source</span>
+                                                </div>
+                                                <p class="os-mod-desc">Open-source tools, experiments, and project repositories.</p>
+                                                <div class="os-mod-foot"><span>github.com/TechJeeper</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                <!-- Collections / hubs -->
-                <div class="portfolio-section">
-                    <div class="section-label">
-                        <span class="section-label-mark" aria-hidden="true"></span>
-                        <h2>Collections</h2>
-                    </div>
-                    <p class="section-lead">Browse the full libraries — open source, watch faces, and printable designs.</p>
+                                            <a href="https://apps.repebble.com/apps/dev/techjeeper_e91bf961199602727bb7cf3a" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fas fa-clock"></i></span>
+                                                        <h3>Pebble Watch Apps</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Wearables</span>
+                                                </div>
+                                                <p class="os-mod-desc">Custom watch faces and apps built for Pebble / Rebble.</p>
+                                                <div class="os-mod-foot"><span>apps.repebble.com</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                    <div class="collections-grid">
-                        <a href="https://github.com/TechJeeper" target="_blank" rel="noopener noreferrer" class="collection-panel collection-panel--github">
-                            <div class="collection-panel-icon"><i class="fab fa-github"></i></div>
-                            <div class="collection-panel-body">
-                                <h3>GitHub</h3>
-                                <p>Open-source tools, experiments, and project code.</p>
-                                <span class="collection-meta">Repos &amp; source</span>
-                            </div>
-                            <i class="fas fa-external-link-alt collection-panel-ext" aria-hidden="true"></i>
-                        </a>
+                                            <a href="https://makerworld.com/en/@TechJeeper" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/makerworld.png" alt="" class="os-mod-icon">
+                                                        <h3>MakerWorld</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Printables</span>
+                                                </div>
+                                                <p class="os-mod-desc">3D printable designs and models published on MakerWorld.</p>
+                                                <div class="os-mod-foot"><span>makerworld.com/@TechJeeper</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
 
-                        <a href="https://apps.repebble.com/apps/dev/techjeeper_e91bf961199602727bb7cf3a" target="_blank" rel="noopener noreferrer" class="collection-panel collection-panel--pebble">
-                            <div class="collection-panel-icon"><i class="fas fa-clock"></i></div>
-                            <div class="collection-panel-body">
-                                <h3>Pebble Watch Apps</h3>
-                                <p>Watch faces and apps for Pebble / Rebble.</p>
-                                <span class="collection-meta">Wearables</span>
+                                            <a href="https://thangs.com/designer/TechJeeper%20Designs" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <img src="assets/img/thangs.png" alt="" class="os-mod-icon">
+                                                        <h3>Thangs</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Printables</span>
+                                                </div>
+                                                <p class="os-mod-desc">3D models and maker creations shared on Thangs.</p>
+                                                <div class="os-mod-foot"><span>thangs.com</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <i class="fas fa-external-link-alt collection-panel-ext" aria-hidden="true"></i>
-                        </a>
 
-                        <a href="https://makerworld.com/en/@TechJeeper" target="_blank" rel="noopener noreferrer" class="collection-panel collection-panel--makerworld">
-                            <div class="collection-panel-icon">
-                                <img src="assets/img/makerworld.png" alt="">
-                            </div>
-                            <div class="collection-panel-body">
-                                <h3>MakerWorld</h3>
-                                <p>3D printable designs and models on MakerWorld.</p>
-                                <span class="collection-meta">Printables</span>
-                            </div>
-                            <i class="fas fa-external-link-alt collection-panel-ext" aria-hidden="true"></i>
-                        </a>
+                            <!-- VIEWPORT 2: SUPPORT / RESUPPLY (TACTICAL TABBED CONSOLE MODULE) -->
+                            <div class="os-view os-window" id="os-view-support" data-view="support" hidden>
+                                <div class="os-win-bar">
+                                    <div class="os-win-title">
+                                        <i class="fas fa-satellite"></i>
+                                        <span>CH-04 // RESUPPLY BAY</span>
+                                    </div>
+                                    <div class="os-win-tabs" role="tablist" aria-label="Support categories">
+                                        <button type="button" class="os-subtab is-active" data-pane-group="supp" data-pane-target="supp-fuel">Direct Fuel (4)</button>
+                                        <button type="button" class="os-subtab" data-pane-group="supp" data-pane-target="supp-affiliates">Partner Codes (9)</button>
+                                    </div>
+                                    <button type="button" class="os-win-close" data-view-target="home" title="Return to standby (Esc)">
+                                        <i class="fas fa-xmark"></i> ESC
+                                    </button>
+                                </div>
 
-                        <a href="https://thangs.com/designer/TechJeeper%20Designs" target="_blank" rel="noopener noreferrer" class="collection-panel collection-panel--thangs">
-                            <div class="collection-panel-icon">
-                                <img src="assets/img/thangs.png" alt="">
+                                <div class="os-win-body">
+                                    <!-- Pane 1: Direct Fuel -->
+                                    <div class="os-pane" id="supp-fuel" data-pane="supp">
+                                        <div class="os-mod-grid">
+                                            <a href="https://www.paypal.com/donate/?hosted_button_id=DTG4XVHF47K2E" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fab fa-paypal"></i></span>
+                                                        <h3>PayPal</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Direct Transfer</span>
+                                                </div>
+                                                <p class="os-mod-desc">One-time or recurring donations directly to the orbital lab.</p>
+                                                <div class="os-mod-foot"><span>paypal.com/donate</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+
+                                            <a href="https://www.patreon.com/Printventory" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fab fa-patreon"></i></span>
+                                                        <h3>Patreon</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Crew Tier</span>
+                                                </div>
+                                                <p class="os-mod-desc">Monthly support and exclusive Printventory community perks.</p>
+                                                <div class="os-mod-foot"><span>patreon.com/Printventory</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+
+                                            <a href="https://www.buymeacoffee.com/printventory" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fas fa-mug-hot"></i></span>
+                                                        <h3>Buy Me a Coffee</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Quick Boost</span>
+                                                </div>
+                                                <p class="os-mod-desc">Quick tips to fuel the next late-night build and filament spool.</p>
+                                                <div class="os-mod-foot"><span>buymeacoffee.com</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+
+                                            <a href="https://makerworld.com/en/@TechJeeper/upload" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id">
+                                                        <span class="os-mod-fa"><i class="fas fa-rocket"></i></span>
+                                                        <h3>Boost on MakerWorld</h3>
+                                                    </div>
+                                                    <span class="os-mod-tag">Free Boost</span>
+                                                </div>
+                                                <p class="os-mod-desc">A free way to back the lab â€” boost any TechJeeper model on MakerWorld.</p>
+                                                <div class="os-mod-foot"><span>makerworld.com/@TechJeeper</span><i class="fas fa-arrow-up-right-from-square"></i></div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pane 2: Partner Codes & Affiliates -->
+                                    <div class="os-pane" id="supp-affiliates" data-pane="supp" hidden>
+                                        <div class="os-mod-grid">
+                                            <a href="https://west3d.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>West3D</h3></div>
+                                                    <span class="os-code-pill">code: techjeeper (5%)</span>
+                                                </div>
+                                                <p class="os-mod-desc">Community-centric 3D printers, filaments, and accessories.</p>
+                                            </a>
+
+                                            <a href="https://snapmaker.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>Snapmaker</h3></div>
+                                                    <span class="os-code-pill">PRINTVENTORY5 (5%)</span>
+                                                </div>
+                                                <p class="os-mod-desc">3-in-1 machines: 3D printing, laser engraving, and CNC carving.</p>
+                                            </a>
+
+                                            <a href="https://headamame.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>Head(amame)</h3></div>
+                                                    <span class="os-code-pill">TECHJEEPER (10%)</span>
+                                                </div>
+                                                <p class="os-mod-desc">Affordable, high-quality 3D-printed headphones.</p>
+                                            </a>
+
+                                            <a href="https://shop.polymaker.com/TECHJEEPER" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>Polymaker</h3></div>
+                                                    <span class="os-code-pill">15% first order</span>
+                                                </div>
+                                                <p class="os-mod-desc">Innovative, high-quality 3D printing filaments.</p>
+                                            </a>
+
+                                            <a href="https://biqu.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>BIQU</h3></div>
+                                                    <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                                </div>
+                                                <p class="os-mod-desc">3D printers, parts, software, and maker materials.</p>
+                                            </a>
+
+                                            <a href="https://btt.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>BigTreeTech</h3></div>
+                                                    <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                                </div>
+                                                <p class="os-mod-desc">3D printing components and high-performance mainboards.</p>
+                                            </a>
+
+                                            <a href="https://nano.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>VisionMiner Nano</h3></div>
+                                                    <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                                </div>
+                                                <p class="os-mod-desc">Industrial 3D printing adhesives and high-temp gear.</p>
+                                            </a>
+
+                                            <a href="https://sovol.techjeeper.com" target="_blank" rel="noopener noreferrer" class="os-mod-card">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>SOVOL</h3></div>
+                                                    <i class="fas fa-arrow-up-right-from-square os-item-arrow"></i>
+                                                </div>
+                                                <p class="os-mod-desc">Reliable, budget-friendly, open-source 3D printers.</p>
+                                            </a>
+
+                                            <a href="mailto:contact@techjeeper.com" class="os-mod-card os-mod-card--wide">
+                                                <div class="os-mod-head">
+                                                    <div class="os-mod-id"><h3>Collaboration Inquiry</h3></div>
+                                                    <span class="os-code-pill">contact@techjeeper.com</span>
+                                                </div>
+                                                <p class="os-mod-desc">Product testing, reviews, or affiliate partnerships â€” let's talk.</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="collection-panel-body">
-                                <h3>Thangs</h3>
-                                <p>3D models and designs shared on Thangs.</p>
-                                <span class="collection-meta">Printables</span>
+
+                            <nav class="os-apps" aria-label="Primary channels">
+                                <a class="os-app" href="https://etsy.techjeeper.com" target="_blank" rel="noopener noreferrer"
+                                   data-app="shop" data-freq="144.2 MHz" data-code="CH-01 // ETSY BAY"
+                                   data-title="Handmade & 3D Printed Drops"
+                                   data-desc="Live catalog of prints, fiber arts, jewelry, and workshop creations.">
+                                    <i class="fas fa-shopping-bag" aria-hidden="true"></i>
+                                    <span>Shop</span>
+                                </a>
+                                <a class="os-app" href="#projects" data-view-target="projects"
+                                   data-app="projects" data-freq="148.9 MHz" data-code="CH-02 // LAB ARCHIVE"
+                                   data-title="Maker Software & Experiments"
+                                   data-desc="Printventory, MakersOnStream, MakerChip, HypeWheel, and open tools.">
+                                    <i class="fas fa-layer-group" aria-hidden="true"></i>
+                                    <span>Projects</span>
+                                </a>
+                                <a class="os-app" href="https://discord.gg/BH2ebjcSjz" target="_blank" rel="noopener noreferrer"
+                                   data-app="comms" data-freq="151.4 MHz" data-code="CH-03 // CREW NET"
+                                   data-title="Discord Comms Relay"
+                                   data-desc="Jump into the live crew channel â€” makers, printers, and stream regulars.">
+                                    <i class="fab fa-discord" aria-hidden="true"></i>
+                                    <span>Comms</span>
+                                </a>
+                                <a class="os-app" href="#support" data-view-target="support"
+                                   data-app="support" data-freq="156.0 MHz" data-code="CH-04 // RESUPPLY"
+                                   data-title="Fuel the Next Transmit"
+                                   data-desc="Patreon, boosts, affiliate gear codes, and ways to back the lab.">
+                                    <i class="fas fa-satellite" aria-hidden="true"></i>
+                                    <span>Support</span>
+                                </a>
+                            </nav>
+
+                            <!-- Interactive command line -->
+                            <form class="os-cli" id="os-cli" autocomplete="off">
+                                <label for="os-cli-input" class="os-cli-prompt">tj@comms:~$</label>
+                                <input id="os-cli-input" class="os-cli-input" type="text"
+                                       placeholder="type help, projects, support, shop, home, scan, partyâ€¦" spellcheck="false">
+                            </form>
+                        </section>
+
+                        <!-- Right: live feed + relays + mascot -->
+                        <aside class="os-col os-col-right" aria-label="Comms log and relays">
+                            <div class="os-panel os-feed">
+                                <div class="os-panel-head">
+                                    <span>INCOMING</span>
+                                    <span class="blink">â— LIVE</span>
+                                </div>
+                                <div class="os-feed-body" id="os-feed"></div>
                             </div>
-                            <i class="fas fa-external-link-alt collection-panel-ext" aria-hidden="true"></i>
-                        </a>
-                    </div>
+                            <div class="os-panel os-socials">
+                                <div class="os-panel-head">
+                                    <span>RELAYS</span>
+                                    <span id="os-relay-status">5 ONLINE</span>
+                                </div>
+                                <div class="os-relay-list">
+                                    <a class="os-relay" href="https://twitch.tv/techjeeper" target="_blank" rel="noopener noreferrer"
+                                       data-relay="TWITCH // STREAM" data-freq="162.5 GHz">
+                                        <span class="os-relay-id"><i class="fab fa-twitch"></i><strong>Twitch Stream</strong></span>
+                                        <span class="os-relay-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                                    </a>
+                                    <a class="os-relay" href="https://x.com/techjeeper" target="_blank" rel="noopener noreferrer"
+                                       data-relay="X // SHORTWAVE" data-freq="88.4 GHz">
+                                        <span class="os-relay-id"><i class="fab fa-twitter"></i><strong>X / Twitter</strong></span>
+                                        <span class="os-relay-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                                    </a>
+                                    <a class="os-relay" href="https://www.tiktok.com/@techjeeper" target="_blank" rel="noopener noreferrer"
+                                       data-relay="TIKTOK // PULSE" data-freq="94.1 GHz">
+                                        <span class="os-relay-id"><i class="fab fa-tiktok"></i><strong>TikTok</strong></span>
+                                        <span class="os-relay-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                                    </a>
+                                    <a class="os-relay" href="https://www.instagram.com/techjeeper/" target="_blank" rel="noopener noreferrer"
+                                       data-relay="IG // OPTICS" data-freq="102.7 GHz">
+                                        <span class="os-relay-id"><i class="fab fa-instagram"></i><strong>Instagram</strong></span>
+                                        <span class="os-relay-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                                    </a>
+                                    <a class="os-relay" href="https://youtube.com/@techjeeper" target="_blank" rel="noopener noreferrer"
+                                       data-relay="YOUTUBE // DEEP BEAM" data-freq="118.0 GHz">
+                                        <span class="os-relay-id"><i class="fab fa-youtube"></i><strong>YouTube</strong></span>
+                                        <span class="os-relay-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="os-panel os-crew">
+                                <img src="assets/img/lab/astronaut.png" alt="" class="os-crew-sprite">
+                                <div class="os-crew-meta">
+                                    <strong>OP // TECHJEEPER</strong>
+                                    <span id="os-crew-line">"Systems green. Pick a channel."</span>
+                                </div>
+                            </div>
+                        </aside>
+                    </main>
+
+                    <footer class="os-dock">
+                        <p class="os-dock-hint">hover to tune Â· click or type to launch Â· F1â€“F4 / Esc hotkeys Â· <a href="mailto:contact@techjeeper.com">collab@uplink</a></p>
+                        <div class="os-dock-meters" aria-hidden="true">
+                            <span>CPU <em id="os-cpu">12%</em></span>
+                            <span>FILAMENT OK</span>
+                            <span>HULL SEAL</span>
+                        </div>
+                    </footer>
                 </div>
             </div>
-        </section>
-    </main>
-    <!-- Scripts -->
-    <script src="assets/js/background.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/animations.js"></script>
+            <div class="console-ledge" aria-hidden="true">
+                <div class="console-keys">
+                    <span></span><span></span><span></span><span class="wide"></span>
+                </div>
+                <div class="console-badge">TJ-COMMS</div>
+            </div>
+        </div>
+    </div>
 
-    <footer>
-        <p><a href="mailto:contact@techjeeper.com">Collaboration Inquiries</a></p>
-    </footer>
+    <script>window.TJ_INITIAL_VIEW="projects";</script><script src="assets/js/console-os.js?v=14"></script>
 </body>
 </html>
+
